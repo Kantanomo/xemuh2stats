@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace xemuh2stats.Properties {
+namespace WhatTheFuck.Properties {
     using System;
     
     
@@ -57,26 +57,6 @@ namespace xemuh2stats.Properties {
             }
             set {
                 resourceCulture = value;
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap info1 {
-            get {
-                object obj = ResourceManager.GetObject("info1", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap info2 {
-            get {
-                object obj = ResourceManager.GetObject("info2", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

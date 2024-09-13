@@ -17,6 +17,10 @@ using OBSWebsocketDotNet.Types.Events;
 using xemuh2stats.classes;
 using xemuh2stats.enums;
 using xemuh2stats.objects;
+using System.IO;
+using DocumentFormat.OpenXml.Vml;
+using Path = System.IO.Path;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 
 
 namespace xemuh2stats
@@ -27,23 +31,10 @@ namespace xemuh2stats
         public static bool real_time_lock = false;
         public static bool dump_lock = false;
         public static List<real_time_player_stats> real_time_cache = new List<real_time_player_stats>();
+        public static QmpProxy qmp;
         
         public Form1()
         {
-            //127300
-            //Program.game_state_resolver.Add(new offset_resolver_item("game_state_players", 0x2CE89D4, "players"));
-            ////Program.game_state_resolver.Add(new offset_resolver_item("weapon_stats", 0x34A1CC4 + 0x128BD0, ""));
-            //Program.game_state_resolver.Add(new offset_resolver_item("weapon_stats", 0x35C8FC4, ""));
-            ////Program.game_state_resolver.Add(new offset_resolver_item("game_stats", 0x34A1BE6, ""));
-            //Program.game_state_resolver.Add(new offset_resolver_item("game_stats", 0x35C8EE6, ""));
-            ////Program.game_state_resolver.Add(new offset_resolver_item("game_stats", 0x34A1BE6, ""));
-            //Program.game_state_resolver.Add(new offset_resolver_item("medal_stats", 0x35C8F32, ""));
-            ////Program.game_state_resolver.Add(new offset_resolver_item("medal_stats", 0x34A1C32, ""));
-            //Program.game_state_resolver.Add(new offset_resolver_item("life_cycle", 0x361FF34, ""));
-            ////Program.game_state_resolver.Add(new offset_resolver_item("life_cycle", 0x34F7364, ""));
-            //Program.game_state_resolver.Add(new offset_resolver_item("game_ending", 0x2CE87EC, ""));
-            //Program.game_state_resolver.Add(new offset_resolver_item("post_game_report", 0x3655974, ""));
-            ////Program.game_state_resolver.Add(new offset_resolver_item("post_game_report", 0x350CAD4, ""));
             InitializeComponent();
 
             iso_select.SelectedIndex = 0;
@@ -114,6 +105,16 @@ namespace xemuh2stats
         }
         private async void go_button_Click(object sender, EventArgs e)
         {
+
+            QmpProxy qmp = new QmpProxy();
+            var addr = qmp.Translate(0x80000000) + 0x3AF000;// + 0x535F04);
+            long addr2 = 0x535F04;// - (long)0x80000000;
+                        //0x35E4F04
+            var addr3 = (long)addr + addr2;
+            //var addr4 = qmp.Gpa2Hva(0x3535f04);
+            //var addr5 = qmp.Translate(0x80000000 + 0x3535f04);// + 0x535F04);
+            //var ddd = qmp.ReadMemory(0x535f04, "");
+
             Program.memory = new MemoryHandler(Process.GetProcessesByName("xemu")[0]);
             if (exec_text_box.Text == "")
             {
@@ -448,6 +449,97 @@ namespace xemuh2stats
                 debug_table.Rows[i].Cells[1].Value = player.game_stats.oddball_score;
                 debug_table.Rows[i].Cells[2].Value = player.game_stats.oddball_ball_kills;
                 debug_table.Rows[i].Cells[3].Value = player.game_stats.assault_bomb_grabbed;
+            }
+        }
+
+        private void xemu_browse_button_Click(object sender, EventArgs e)
+        {
+            using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+            {
+                System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    xemu_path_text_box.Text = dialog.SelectedPath;
+                }
+            }
+        }
+        private string FindFileInDirectory(string folderPath, string fileNameToFind)
+        {
+            try
+            {
+                // Search in the current directory
+                foreach (var file in Directory.GetFiles(folderPath))
+                {
+                    if (Path.GetFileName(file).Equals(fileNameToFind, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return file;  // Return the full path of the file if found
+                    }
+                }
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return "";
+            }
+            catch (Exception ex)
+            {
+                return "";
+            }
+
+            return null;  // Return null if the file is not found
+        }
+
+        private void resolve_addresses()
+        {
+            // offsets are host (host virtual address - host_base_executable_address)
+            Program.exec_resolver.Add(new offset_resolver_item("game_stats", 0x35ADF02, ""));
+            Program.exec_resolver.Add(new offset_resolver_item("weapon_stats", 0x35ADFE0, ""));
+            Program.exec_resolver.Add(new offset_resolver_item("medal_stats", 0x35ADF4E, ""));
+            Program.exec_resolver.Add(new offset_resolver_item("life_cycle", 0x35E4F04, ""));
+            Program.exec_resolver.Add(new offset_resolver_item("post_game_report", 0x363A990, ""));
+            Program.exec_resolver.Add(new offset_resolver_item("session_players", 0x35AD344, ""));
+            Program.exec_resolver.Add(new offset_resolver_item("variant_info", 0x35AD0EC, ""));
+            Program.exec_resolver.Add(new offset_resolver_item("profile_enabled", 0x3569128, ""));
+            Program.exec_resolver.Add(new offset_resolver_item("players", 0x35A44F4, ""));
+
+            // xemu base_address + xbe base_address
+            var host_base_executable_address = (long)qmp.Translate(0x80000000) + 0x5C000;
+            
+            foreach (offset_resolver_item offsetResolverItem in Program.exec_resolver)
+            {
+                offsetResolverItem.address = host_base_executable_address + offsetResolverItem.offset;
+            }
+
+            ulong test = Program.memory.ReadUInt(Program.exec_resolver["players"].address);
+
+            var taddr = qmp.Translate(test);
+
+            Program.game_state_resolver["game_state_players"].address = (long)taddr;
+            Program.game_state_resolver["game_ending"].address = (long) taddr - 0x1E8;
+
+            main_tab_control.TabPages.Add(players_tab_page);
+            main_tab_control.TabPages.Add(weapon_stats_tab);
+        }
+
+        private void xemu_launch_button_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(xemu_path_text_box.Text))
+            {
+                var xemu_path = FindFileInDirectory(xemu_path_text_box.Text, "xemu.exe");
+                if (!string.IsNullOrEmpty(xemu_path))
+                {
+                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    {
+                        FileName = xemu_path,
+                        Arguments = "-qmp tcp:localhost:4444,server,nowait",
+                    };
+                    Process.Start(startInfo);
+                    System.Threading.Thread.Sleep(5000);
+                    qmp = new QmpProxy();
+
+                    Program.memory = new MemoryHandler(Process.GetProcessesByName("xemu")[0]);
+                    resolve_addresses();
+                    is_valid = true;
+                }
             }
         }
     }
