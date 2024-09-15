@@ -26,7 +26,7 @@ namespace xemuh2stats.objects
 
         private static void onConnect(object sender, EventArgs e)
         {
-            obs.SendRequest("SetTextGDIPlusProperties", new JObject("source", "banana", "text", "banana"));
+
         }
 
         private static void onDisconnect(object sender, OBSWebsocketDotNet.Communication.ObsDisconnectionInfo e)
@@ -37,6 +37,11 @@ namespace xemuh2stats.objects
         private static void onCurrentProgramSceneChanged(object sender, ProgramSceneChangedEventArgs args)
         {
 
+        }
+
+        public static void update_text(string text)
+        {
+            obs.SetInputSettings("banana", new JObject(){{"text", text}});
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WhatTheFuck.classes;
 using xemuh2stats.classes;
 using xemuh2stats.objects;
 using Application = System.Windows.Forms.Application;
@@ -17,6 +18,7 @@ namespace xemuh2stats
         public static long game_state_address;
         public static offset_resolver game_state_resolver = new offset_resolver();
         public static offset_resolver exec_resolver = new offset_resolver();
+        public static configuration_collection configurations = new configuration_collection();
         /// <summary>
         /// The main entry point for the application.
         /// </summary>

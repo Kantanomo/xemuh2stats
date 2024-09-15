@@ -118,6 +118,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="classes\configuration.cs" />
     <Compile Include="classes\qmp_communicator.cs" />
     <Compile Include="enums\game_type.cs" />
     <Compile Include="enums\life_cycle.cs" />

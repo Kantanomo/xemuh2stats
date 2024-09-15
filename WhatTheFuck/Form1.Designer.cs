@@ -29,21 +29,21 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.go_text_box = new System.Windows.Forms.TextBox();
-            this.go_button = new System.Windows.Forms.Button();
-            this.valid_label = new System.Windows.Forms.Label();
             this.main_tab_control = new System.Windows.Forms.TabControl();
             this.setup_tab_page = new System.Windows.Forms.TabPage();
-            this.xemu_launch_button = new System.Windows.Forms.Button();
-            this.xemu_browse_button = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
-            this.xemu_path_text_box = new System.Windows.Forms.TextBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.profile_disabled_check_box = new System.Windows.Forms.CheckBox();
-            this.iso_select = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.configuration_save_button = new System.Windows.Forms.Button();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.instance_name_text_box = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.exec_text_box = new System.Windows.Forms.TextBox();
+            this.xemu_path_text_box = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.disable_rendering_check_box = new System.Windows.Forms.CheckBox();
+            this.profile_disabled_check_box = new System.Windows.Forms.CheckBox();
+            this.xemu_browse_button = new System.Windows.Forms.Button();
+            this.configuration_combo_box = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.xemu_launch_button = new System.Windows.Forms.Button();
             this.players_tab_page = new System.Windows.Forms.TabPage();
             this.players_table = new System.Windows.Forms.DataGridView();
             this.column_player_name = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -63,6 +63,7 @@
             this.weapon_shots_fired_column = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.weapon_shots_hit_column = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.debug_tab = new System.Windows.Forms.TabPage();
+            this.dump_stats_to_binary_button = new System.Windows.Forms.Button();
             this.debug_table = new System.Windows.Forms.DataGridView();
             this.asdf_1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.debug_index_column = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -75,9 +76,9 @@
             this.variant_status_label = new System.Windows.Forms.ToolStripStatusLabel();
             this.game_type_status_label = new System.Windows.Forms.ToolStripStatusLabel();
             this.map_status_label = new System.Windows.Forms.ToolStripStatusLabel();
-            this.dump_stats_to_binary_button = new System.Windows.Forms.Button();
             this.main_tab_control.SuspendLayout();
             this.setup_tab_page.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.players_tab_page.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.players_table)).BeginInit();
@@ -87,35 +88,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.debug_table)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // go_text_box
-            // 
-            this.go_text_box.Location = new System.Drawing.Point(152, 40);
-            this.go_text_box.Name = "go_text_box";
-            this.go_text_box.Size = new System.Drawing.Size(160, 20);
-            this.go_text_box.TabIndex = 0;
-            this.go_text_box.Visible = false;
-            // 
-            // go_button
-            // 
-            this.go_button.Location = new System.Drawing.Point(341, 81);
-            this.go_button.Name = "go_button";
-            this.go_button.Size = new System.Drawing.Size(69, 20);
-            this.go_button.TabIndex = 1;
-            this.go_button.Text = "Attach";
-            this.go_button.UseVisualStyleBackColor = true;
-            this.go_button.Visible = false;
-            this.go_button.Click += new System.EventHandler(this.go_button_Click);
-            // 
-            // valid_label
-            // 
-            this.valid_label.AutoSize = true;
-            this.valid_label.Location = new System.Drawing.Point(416, 85);
-            this.valid_label.Name = "valid_label";
-            this.valid_label.Size = new System.Drawing.Size(16, 13);
-            this.valid_label.TabIndex = 2;
-            this.valid_label.Text = "...";
-            this.valid_label.Visible = false;
             // 
             // main_tab_control
             // 
@@ -131,18 +103,11 @@
             // 
             // setup_tab_page
             // 
-            this.setup_tab_page.Controls.Add(this.xemu_launch_button);
-            this.setup_tab_page.Controls.Add(this.xemu_browse_button);
-            this.setup_tab_page.Controls.Add(this.label3);
-            this.setup_tab_page.Controls.Add(this.xemu_path_text_box);
-            this.setup_tab_page.Controls.Add(this.groupBox1);
-            this.setup_tab_page.Controls.Add(this.iso_select);
+            this.setup_tab_page.Controls.Add(this.configuration_save_button);
+            this.setup_tab_page.Controls.Add(this.groupBox2);
+            this.setup_tab_page.Controls.Add(this.configuration_combo_box);
             this.setup_tab_page.Controls.Add(this.label1);
-            this.setup_tab_page.Controls.Add(this.valid_label);
-            this.setup_tab_page.Controls.Add(this.label2);
-            this.setup_tab_page.Controls.Add(this.go_button);
-            this.setup_tab_page.Controls.Add(this.exec_text_box);
-            this.setup_tab_page.Controls.Add(this.go_text_box);
+            this.setup_tab_page.Controls.Add(this.xemu_launch_button);
             this.setup_tab_page.Location = new System.Drawing.Point(4, 22);
             this.setup_tab_page.Name = "setup_tab_page";
             this.setup_tab_page.Padding = new System.Windows.Forms.Padding(3);
@@ -151,54 +116,90 @@
             this.setup_tab_page.Text = "setup";
             this.setup_tab_page.UseVisualStyleBackColor = true;
             // 
-            // xemu_launch_button
+            // configuration_save_button
             // 
-            this.xemu_launch_button.Location = new System.Drawing.Point(513, 201);
-            this.xemu_launch_button.Name = "xemu_launch_button";
-            this.xemu_launch_button.Size = new System.Drawing.Size(69, 21);
-            this.xemu_launch_button.TabIndex = 20;
-            this.xemu_launch_button.Text = "Launch";
-            this.xemu_launch_button.UseVisualStyleBackColor = true;
-            this.xemu_launch_button.Click += new System.EventHandler(this.xemu_launch_button_Click);
+            this.configuration_save_button.Location = new System.Drawing.Point(215, 10);
+            this.configuration_save_button.Name = "configuration_save_button";
+            this.configuration_save_button.Size = new System.Drawing.Size(69, 21);
+            this.configuration_save_button.TabIndex = 25;
+            this.configuration_save_button.Text = "Save";
+            this.configuration_save_button.UseVisualStyleBackColor = true;
+            this.configuration_save_button.Click += new System.EventHandler(this.configuration_save_button_Click);
             // 
-            // xemu_browse_button
+            // groupBox2
             // 
-            this.xemu_browse_button.Location = new System.Drawing.Point(438, 201);
-            this.xemu_browse_button.Name = "xemu_browse_button";
-            this.xemu_browse_button.Size = new System.Drawing.Size(69, 21);
-            this.xemu_browse_button.TabIndex = 19;
-            this.xemu_browse_button.Text = "Browse";
-            this.xemu_browse_button.UseVisualStyleBackColor = true;
-            this.xemu_browse_button.Click += new System.EventHandler(this.xemu_browse_button_Click);
+            this.groupBox2.Controls.Add(this.instance_name_text_box);
+            this.groupBox2.Controls.Add(this.label2);
+            this.groupBox2.Controls.Add(this.xemu_path_text_box);
+            this.groupBox2.Controls.Add(this.label3);
+            this.groupBox2.Controls.Add(this.groupBox1);
+            this.groupBox2.Controls.Add(this.xemu_browse_button);
+            this.groupBox2.Location = new System.Drawing.Point(6, 50);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(756, 461);
+            this.groupBox2.TabIndex = 25;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Settings";
             // 
-            // label3
+            // instance_name_text_box
             // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(9, 205);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(56, 13);
-            this.label3.TabIndex = 18;
-            this.label3.Text = "xemu path";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.instance_name_text_box.Location = new System.Drawing.Point(100, 23);
+            this.instance_name_text_box.Name = "instance_name_text_box";
+            this.instance_name_text_box.Size = new System.Drawing.Size(361, 20);
+            this.instance_name_text_box.TabIndex = 23;
+            // 
+            // label2
+            // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 26);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(82, 13);
+            this.label2.TabIndex = 24;
+            this.label2.Text = "Instance Name:";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // xemu_path_text_box
             // 
-            this.xemu_path_text_box.Location = new System.Drawing.Point(71, 202);
+            this.xemu_path_text_box.Location = new System.Drawing.Point(100, 49);
             this.xemu_path_text_box.Name = "xemu_path_text_box";
             this.xemu_path_text_box.Size = new System.Drawing.Size(361, 20);
             this.xemu_path_text_box.TabIndex = 17;
             this.xemu_path_text_box.Text = "F:\\xemu";
             // 
+            // label3
+            // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 52);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(61, 13);
+            this.label3.TabIndex = 18;
+            this.label3.Text = "Xemu path:";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.disable_rendering_check_box);
             this.groupBox1.Controls.Add(this.profile_disabled_check_box);
-            this.groupBox1.Location = new System.Drawing.Point(6, 447);
+            this.groupBox1.Location = new System.Drawing.Point(6, 92);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(756, 171);
+            this.groupBox1.Size = new System.Drawing.Size(744, 72);
             this.groupBox1.TabIndex = 16;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "options";
+            this.groupBox1.Text = "Options";
+            // 
+            // disable_rendering_check_box
+            // 
+            this.disable_rendering_check_box.AutoSize = true;
+            this.disable_rendering_check_box.Location = new System.Drawing.Point(89, 19);
+            this.disable_rendering_check_box.Name = "disable_rendering_check_box";
+            this.disable_rendering_check_box.Size = new System.Drawing.Size(106, 17);
+            this.disable_rendering_check_box.TabIndex = 1;
+            this.disable_rendering_check_box.Text = "disable rendering";
+            this.disable_rendering_check_box.UseVisualStyleBackColor = true;
+            this.disable_rendering_check_box.Visible = false;
+            this.disable_rendering_check_box.CheckedChanged += new System.EventHandler(this.disable_rendering_check_box_CheckedChanged);
             // 
             // profile_disabled_check_box
             // 
@@ -210,50 +211,45 @@
             this.profile_disabled_check_box.Text = "Dedi mode";
             this.profile_disabled_check_box.UseVisualStyleBackColor = true;
             // 
-            // iso_select
+            // xemu_browse_button
             // 
-            this.iso_select.FormattingEnabled = true;
-            this.iso_select.Items.AddRange(new object[] {
-            "1.5 base iso",
-            "r1 iso",
-            "1.0 base iso"});
-            this.iso_select.Location = new System.Drawing.Point(216, 80);
-            this.iso_select.Name = "iso_select";
-            this.iso_select.Size = new System.Drawing.Size(119, 21);
-            this.iso_select.TabIndex = 5;
-            this.iso_select.Visible = false;
+            this.xemu_browse_button.Location = new System.Drawing.Point(467, 48);
+            this.xemu_browse_button.Name = "xemu_browse_button";
+            this.xemu_browse_button.Size = new System.Drawing.Size(69, 21);
+            this.xemu_browse_button.TabIndex = 19;
+            this.xemu_browse_button.Text = "Browse";
+            this.xemu_browse_button.UseVisualStyleBackColor = true;
+            this.xemu_browse_button.Click += new System.EventHandler(this.xemu_browse_button_Click);
+            // 
+            // configuration_combo_box
+            // 
+            this.configuration_combo_box.FormattingEnabled = true;
+            this.configuration_combo_box.Location = new System.Drawing.Point(95, 10);
+            this.configuration_combo_box.Name = "configuration_combo_box";
+            this.configuration_combo_box.Size = new System.Drawing.Size(114, 21);
+            this.configuration_combo_box.TabIndex = 22;
+            this.configuration_combo_box.SelectedIndexChanged += new System.EventHandler(this.configuration_combo_box_SelectedIndexChanged);
             // 
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(56, 43);
+            this.label1.Location = new System.Drawing.Point(9, 13);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(58, 13);
-            this.label1.TabIndex = 7;
-            this.label1.Text = "Address A:";
+            this.label1.Size = new System.Drawing.Size(72, 13);
+            this.label1.TabIndex = 21;
+            this.label1.Text = "Configuration:";
             this.label1.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            this.label1.Visible = false;
             // 
-            // label2
+            // xemu_launch_button
             // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(437, 43);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(58, 13);
-            this.label2.TabIndex = 8;
-            this.label2.Text = "Address B:";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            this.label2.Visible = false;
-            // 
-            // exec_text_box
-            // 
-            this.exec_text_box.Location = new System.Drawing.Point(533, 40);
-            this.exec_text_box.Name = "exec_text_box";
-            this.exec_text_box.Size = new System.Drawing.Size(160, 20);
-            this.exec_text_box.TabIndex = 6;
-            this.exec_text_box.Visible = false;
+            this.xemu_launch_button.Location = new System.Drawing.Point(12, 517);
+            this.xemu_launch_button.Name = "xemu_launch_button";
+            this.xemu_launch_button.Size = new System.Drawing.Size(750, 101);
+            this.xemu_launch_button.TabIndex = 20;
+            this.xemu_launch_button.Text = "Launch";
+            this.xemu_launch_button.UseVisualStyleBackColor = true;
+            this.xemu_launch_button.Click += new System.EventHandler(this.xemu_launch_button_Click);
             // 
             // players_tab_page
             // 
@@ -429,6 +425,16 @@
             this.debug_tab.Text = "debug";
             this.debug_tab.UseVisualStyleBackColor = true;
             // 
+            // dump_stats_to_binary_button
+            // 
+            this.dump_stats_to_binary_button.Location = new System.Drawing.Point(6, 537);
+            this.dump_stats_to_binary_button.Name = "dump_stats_to_binary_button";
+            this.dump_stats_to_binary_button.Size = new System.Drawing.Size(69, 21);
+            this.dump_stats_to_binary_button.TabIndex = 21;
+            this.dump_stats_to_binary_button.Text = "dump";
+            this.dump_stats_to_binary_button.UseVisualStyleBackColor = true;
+            this.dump_stats_to_binary_button.Click += new System.EventHandler(this.dump_stats_to_binary_button_Click);
+            // 
             // debug_table
             // 
             this.debug_table.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -512,16 +518,6 @@
             this.map_status_label.Size = new System.Drawing.Size(34, 17);
             this.map_status_label.Text = "Map:";
             // 
-            // dump_stats_to_binary_button
-            // 
-            this.dump_stats_to_binary_button.Location = new System.Drawing.Point(6, 537);
-            this.dump_stats_to_binary_button.Name = "dump_stats_to_binary_button";
-            this.dump_stats_to_binary_button.Size = new System.Drawing.Size(69, 21);
-            this.dump_stats_to_binary_button.TabIndex = 21;
-            this.dump_stats_to_binary_button.Text = "dump";
-            this.dump_stats_to_binary_button.UseVisualStyleBackColor = true;
-            this.dump_stats_to_binary_button.Click += new System.EventHandler(this.dump_stats_to_binary_button_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -535,6 +531,8 @@
             this.main_tab_control.ResumeLayout(false);
             this.setup_tab_page.ResumeLayout(false);
             this.setup_tab_page.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.players_tab_page.ResumeLayout(false);
@@ -551,10 +549,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.TextBox go_text_box;
-        private System.Windows.Forms.Button go_button;
-        private System.Windows.Forms.Label valid_label;
         private System.Windows.Forms.TabControl main_tab_control;
         private System.Windows.Forms.TabPage players_tab_page;
         private System.Windows.Forms.Timer main_timer;
@@ -562,11 +556,7 @@
         private System.Windows.Forms.TabPage weapon_stats_tab;
         private System.Windows.Forms.DataGridView weapon_stat_table;
         private System.Windows.Forms.ComboBox weapon_player_select;
-        private System.Windows.Forms.ComboBox iso_select;
-        private System.Windows.Forms.TextBox exec_text_box;
         private System.Windows.Forms.TabPage setup_tab_page;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel life_cycle_status_label;
         private System.Windows.Forms.ToolStripStatusLabel variant_status_label;
@@ -599,6 +589,13 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn asdf_3;
         private System.Windows.Forms.DataGridViewTextBoxColumn asdf_4;
         private System.Windows.Forms.Button dump_stats_to_binary_button;
+        private System.Windows.Forms.CheckBox disable_rendering_check_box;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox configuration_combo_box;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.TextBox instance_name_text_box;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button configuration_save_button;
     }
 }
 

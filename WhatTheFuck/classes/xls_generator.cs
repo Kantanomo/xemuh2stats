@@ -16,7 +16,7 @@ namespace xemuh2stats.classes
 {
     public static class xls_generator
     {
-        public static void dump_game_to_sheet(string filename, List<real_time_player_stats> real_time_player_stats, List<s_post_game_player> post_game_player_stats)
+        public static void dump_game_to_sheet(string filename, List<real_time_player_stats> real_time_player_stats, List<s_post_game_player> post_game_player_stats, s_variant_details variant_details)
         {
             if (!Directory.Exists($"{AppDomain.CurrentDomain.BaseDirectory}/stats/"))
                 Directory.CreateDirectory($"{AppDomain.CurrentDomain.BaseDirectory}/stats/");
@@ -39,6 +39,7 @@ namespace xemuh2stats.classes
                 // Add some data to the worksheet.
                 SheetData sheetData = worksheetPart.Worksheet.GetFirstChild<SheetData>();
 
+                CreateDetailsSheet(workbookPart, sheets, variant_details);
                 CreatePostStatsSheet(workbookPart, sheets, post_game_player_stats);
                 CreateVersusSheet(workbookPart, sheets, post_game_player_stats);
                 CreateGameStatsSheet(workbookPart, sheets, real_time_player_stats);
@@ -78,6 +79,7 @@ namespace xemuh2stats.classes
         {
             "Game Type",
             "Variant Name",
+            "Map Name",
             "Start Time",
             "End Time",
             "Duration"
@@ -103,19 +105,26 @@ namespace xemuh2stats.classes
             row.Append(cell);
             cell = new Cell()
             {
-                CellValue = new CellValue(variant_details.start_time),
-                DataType = new EnumValue<CellValues>(CellValues.Date)
+                CellValue = new CellValue(variant_details.map_name),
+                DataType = new EnumValue<CellValues>(CellValues.String)
             };
             row.Append(cell);
             cell = new Cell()
             {
-                CellValue = new CellValue(variant_details.end_time),
-                DataType = new EnumValue<CellValues>(CellValues.Date)
+                CellValue = new CellValue($"{variant_details.start_time.ToShortDateString()} {variant_details.start_time.ToShortTimeString()}"),
+                DataType = new EnumValue<CellValues>(CellValues.String)
             };
             row.Append(cell);
             cell = new Cell()
             {
-                CellValue = new CellValue(variant_details.duration.ToString("MM:SS")),
+                CellValue = new CellValue($"{variant_details.end_time.ToShortDateString()} {variant_details.end_time.ToShortTimeString()}"),
+                DataType = new EnumValue<CellValues>(CellValues.String)
+            };
+            row.Append(cell);
+            string t = variant_details.duration.ToString(@"mm\:ss");
+            cell = new Cell()
+            {
+                CellValue = new CellValue(t),
                 DataType = new EnumValue<CellValues>(CellValues.String)
             };
             row.Append(cell);

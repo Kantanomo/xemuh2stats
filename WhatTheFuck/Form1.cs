@@ -21,6 +21,10 @@ using System.IO;
 using DocumentFormat.OpenXml.Vml;
 using Path = System.IO.Path;
 using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using WhatTheFuck.classes;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml;
+using System.Numerics;
 
 
 namespace xemuh2stats
@@ -30,6 +34,12 @@ namespace xemuh2stats
         public static bool is_valid = false;
         public static bool real_time_lock = false;
         public static bool dump_lock = false;
+
+        public static bool time_lock = false;
+        public static DateTime StartTime;
+        public static s_variant_details variant_details_cache;
+
+
         public static List<real_time_player_stats> real_time_cache = new List<real_time_player_stats>();
         public static QmpProxy qmp;
         
@@ -37,7 +47,7 @@ namespace xemuh2stats
         {
             InitializeComponent();
 
-            iso_select.SelectedIndex = 0;
+            //obs_communicator.connect("ws://localhost:4455", "HTMwlVgpQ7jyQpJl");
 
             for (int i = 0; i < 16; i++)
             {
@@ -51,174 +61,15 @@ namespace xemuh2stats
                 weapon_stat_table.Rows[i].Cells[0].Value = weapon_stat.weapon_list[i];
             }
 
+            foreach (configuration configuration in Program.configurations.AsList)
+            {
+                configuration_combo_box.Items.Add(configuration.name);
+            }
+
             main_tab_control.TabPages.RemoveAt(1);
             main_tab_control.TabPages.RemoveAt(1);
 
             weapon_player_select.Tag = 0;
-        }
-
-        private void SetResolver()
-        {
-            Program.game_state_resolver.Clear();
-            switch (iso_select.SelectedIndex)
-            { 
-                case 0: // 1.5
-                    
-                    Program.game_state_resolver.Add(new offset_resolver_item("game_state_players", 0x2CE89D4, "players"));
-                    Program.game_state_resolver.Add(new offset_resolver_item("game_ending", 0x2CE87EC, ""));
-
-
-                    Program.exec_resolver.Add(new offset_resolver_item("game_stats", 0x35ADF02, ""));
-                    Program.exec_resolver.Add(new offset_resolver_item("weapon_stats", 0x35ADFE0, ""));
-                    Program.exec_resolver.Add(new offset_resolver_item("medal_stats", 0x35ADF4E, ""));
-                    Program.exec_resolver.Add(new offset_resolver_item("life_cycle", 0x35E4F04, ""));
-                    Program.exec_resolver.Add(new offset_resolver_item("post_game_report", 0x363A990, ""));
-                    Program.exec_resolver.Add(new offset_resolver_item("session_players", 0x35AD344, ""));
-                    Program.exec_resolver.Add(new offset_resolver_item("variant_info", 0x35AD0EC, ""));
-                    Program.exec_resolver.Add(new offset_resolver_item("profile_enabled", 0x3569128, ""));
-                    break;
-                case 1: // r1
-
-                    break;
-                case 2: // 1.0
-                    Program.game_state_resolver.Add(new offset_resolver_item("game_state_players", 0x2CE89D4, "players"));
-                    Program.game_state_resolver.Add(new offset_resolver_item("weapon_stats", 0x34A1CC4, ""));
-                    Program.game_state_resolver.Add(new offset_resolver_item("game_stats", 0x34A1BE6, ""));
-                    Program.game_state_resolver.Add(new offset_resolver_item("medal_stats", 0x34A1C32, ""));
-                    Program.game_state_resolver.Add(new offset_resolver_item("life_cycle", 0x34F7364, ""));
-                    Program.game_state_resolver.Add(new offset_resolver_item("game_ending", 0x2CE87EC, ""));
-                    Program.game_state_resolver.Add(new offset_resolver_item("post_game_report", 0x350CAD4, ""));
-                    break;
-                default:
-
-                    break;
-            }
-        }
-
-        static bool IsHexString(string input)
-        {
-            // Regular expression to match hexadecimal format
-            Regex hexPattern = new Regex("^[0-9a-fA-F]+$");
-
-            // Check if the input matches the pattern
-            return hexPattern.IsMatch(input);
-        }
-        private async void go_button_Click(object sender, EventArgs e)
-        {
-
-            QmpProxy qmp = new QmpProxy();
-            var addr = qmp.Translate(0x80000000) + 0x3AF000;// + 0x535F04);
-            long addr2 = 0x535F04;// - (long)0x80000000;
-                        //0x35E4F04
-            var addr3 = (long)addr + addr2;
-            //var addr4 = qmp.Gpa2Hva(0x3535f04);
-            //var addr5 = qmp.Translate(0x80000000 + 0x3535f04);// + 0x535F04);
-            //var ddd = qmp.ReadMemory(0x535f04, "");
-
-            Program.memory = new MemoryHandler(Process.GetProcessesByName("xemu")[0]);
-            if (exec_text_box.Text == "")
-            {
-                var exec_list = Program.memory.ScanProcessAsync(
-                    new byte[] {0x53, 0x33, 0xDB, 0xE8, 0x80, 0xDD, 0x2C, 0x00},
-                    new byte[] {1, 1, 1, 1, 1, 1, 1, 1});
-
-                int working_count = 0;
-                while (!exec_list.IsCompleted)
-                {
-                    valid_label.Text = "Working" + new string('.', working_count);
-                    working_count++;
-                    if (working_count == 5)
-                        working_count = 0;
-                    await Task.Delay(100);
-                }
-                exec_text_box.Text = exec_list.Result[0].ToString("X");
-            }
-            
-            if (go_text_box.Text == "")
-            {
-                var tags_list = Program.memory.ScanProcessAsync(
-                new byte[] {0x73, 0x67, 0x61, 0x74, 0x2B, 0x21, 0x23, 0x24},
-                new byte[] {1, 1, 1, 1, 1, 1, 1, 1});
-
-                var working_count = 0;
-                while (!tags_list.IsCompleted)
-                {
-                    valid_label.Text = "Working" + new string('.', working_count);
-                    working_count++;
-                    if (working_count == 5)
-                        working_count = 0;
-                    await Task.Delay(100);
-                }
-                go_text_box.Text = tags_list.Result[0].ToString("X");
-            }
-
-            var b = 123123;
-
-            SetResolver();
-
-            long address = Convert.ToInt64(go_text_box.Text, 16);
-            //Program.memory = new MemoryHandler(Process.GetProcessesByName("xemu")[0]);
-            ////5333DBE8023D2C00
-            ////byte[] targetBytes = new byte[] { 0x53, 0x33, 0xDB, 0xE8, 0x02, 0x3D, 0x2C, 0x00 };
-            ////byte[] t_bytes = memory.ReadMemory(false, address, targetBytes.Length);
-            var t_string = Program.memory.ReadStringAscii(address, 8, false);
-
-            if (t_string == "sgat+!#$")
-            {
-                int valid_count = 0;
-                foreach (offset_resolver_item offsetResolverItem in Program.game_state_resolver)
-                {
-                    offsetResolverItem.address = address + offsetResolverItem.offset;
-                    t_string = Program.memory.ReadStringAscii(offsetResolverItem.address, offsetResolverItem.value.Length);
-                    if (t_string == offsetResolverItem.value)
-                    {
-                        valid_count++;
-                    }
-                }
-
-                if (valid_count == Program.game_state_resolver.Count)
-                {
-                    valid_label.Text = "Valid!";
-                    is_valid = true;
-                }
-                else
-                {
-                    valid_label.Text = "Invalid!";
-                    is_valid = false;
-                }
-            }
-
-            address = Convert.ToInt64(exec_text_box.Text, 16);
-            byte[] targetBytes = new byte[] { 0x53, 0x33, 0xDB, 0xE8, 0x80, 0xDD, 0x2C, 0x00 };
-            byte[] t_bytes = Program.memory.ReadMemory(false, address, targetBytes.Length);
-
-            if (targetBytes.SequenceEqual(t_bytes))
-            {
-                int valid_count = 0;
-                foreach (offset_resolver_item offsetResolverItem in Program.exec_resolver)
-                {
-                    offsetResolverItem.address = address + offsetResolverItem.offset;
-                    t_string = Program.memory.ReadStringAscii(offsetResolverItem.address, offsetResolverItem.value.Length);
-                    if (t_string == offsetResolverItem.value)
-                        valid_count++;
-                }
-                if (valid_count == Program.exec_resolver.Count)
-                {
-                    valid_label.Text = "Valid!";
-                    is_valid = true;
-                }
-                else
-                {
-                    valid_label.Text = "Invalid!";
-                    is_valid = false;
-                }
-            }
-
-            if (is_valid)
-            {
-                main_tab_control.TabPages.Add(players_tab_page);
-                main_tab_control.TabPages.Add(weapon_stats_tab);
-            }
         }
 
         private void main_timer_Tick(object sender, EventArgs e)
@@ -226,46 +77,15 @@ namespace xemuh2stats
             if (is_valid)
             {
                 var game_ending = Program.memory.ReadBool(Program.game_state_resolver["game_ending"].address);
-                var cycle = (life_cycle)Program.memory.ReadInt(Program.exec_resolver["life_cycle"].address);
-                
-                life_cycle_status_label.Text = $@"Life Cycle: {cycle.ToString()} |";
-
-                if (cycle == life_cycle.in_lobby)
-                {
-                    Program.memory.WriteBool(Program.exec_resolver["profile_enabled"].address,!profile_disabled_check_box.Checked, false);
-                }
-
-                if (cycle == life_cycle.in_game)
-                {
-                    var variant = variant_details.get();
-                    variant_status_label.Text = $@"Variant: {variant.name} |";
-                    game_type_status_label.Text = $@"Game Type: {variant.game_type.ToString()} |";
-                    map_status_label.Text = $@"Map: {variant.map_name} |";
-                }
-
-                switch (main_tab_control.SelectedTab.Text)
-                {
-                    case "Players":
-                        {
-                            render_players_tab();
-                            break;
-                        }
-                    case "Weapon Stats":
-                        {
-                            render_weapon_stat_tab();
-                            break;
-                        }
-                    case "debug":
-                    {
-                        render_debug_tab();
-                        break;
-                    }
-                }
 
                 if (game_ending)
                 {
                     if (!real_time_lock)
                     {
+                        variant_details_cache = variant_details.get();
+                        variant_details_cache.start_time = StartTime;
+                        variant_details_cache.end_time = DateTime.Now;
+                        
                         int player_count =
                             Program.memory.ReadInt(Program.game_state_resolver["game_state_players"].address + 0x3C);
 
@@ -284,6 +104,32 @@ namespace xemuh2stats
                     real_time_lock = false;
                 }
 
+                var cycle = (life_cycle)Program.memory.ReadInt(Program.exec_resolver["life_cycle"].address);
+                
+                life_cycle_status_label.Text = $@"Life Cycle: {cycle.ToString()} |";
+
+                if (cycle == life_cycle.in_lobby)
+                {
+                    Program.memory.WriteBool(Program.exec_resolver["profile_enabled"].address,!profile_disabled_check_box.Checked, false);
+                }
+
+                if (cycle == life_cycle.in_game)
+                {
+                    var variant = variant_details.get();
+                    variant_status_label.Text = $@"Variant: {variant.name} |";
+                    game_type_status_label.Text = $@"Game Type: {variant.game_type.ToString()} |";
+                    map_status_label.Text = $@"Map: {variant.map_name} |";
+                    if (!time_lock)
+                    {
+                        StartTime = DateTime.Now;
+                        time_lock = true;
+                    }
+                }
+                else
+                {
+                    time_lock = false;
+                }
+                
                 if (cycle == life_cycle.post_game)
                 {
                     if (!dump_lock)
@@ -296,7 +142,7 @@ namespace xemuh2stats
                             post_game_.Add(post_game_report.get(i));
                         }
 
-                        xls_generator.dump_game_to_sheet($"{timestamp}", real_time_cache, post_game_);
+                        xls_generator.dump_game_to_sheet($"{timestamp}", real_time_cache, post_game_, variant_details_cache);
                         dump_lock = true;
                     }
                 }
@@ -304,6 +150,26 @@ namespace xemuh2stats
                 {
                     dump_lock = false;
                 }
+
+                switch (main_tab_control.SelectedTab.Text)
+                {
+                    case "Players":
+                    {
+                        render_players_tab();
+                        break;
+                    }
+                    case "Weapon Stats":
+                    {
+                        render_weapon_stat_tab();
+                        break;
+                    }
+                    case "debug":
+                    {
+                        render_debug_tab();
+                        break;
+                    }
+                }
+
             }
         }
 
@@ -348,6 +214,18 @@ namespace xemuh2stats
                     weapon_stat_table.Rows[i].Cells[5].Value = stat.shots_fired;
                     weapon_stat_table.Rows[i].Cells[6].Value = stat.shots_hit;
                 }
+                //weapon_stat.s_weapon_stat astat = weapon_stat.get_weapon_stats(weapon_player_select.SelectedIndex, 5);
+
+                //if (astat.shots_fired != 0 && astat.shots_hit != 0)
+                //{
+                //    double accuracy = (double)astat.shots_hit / astat.shots_fired;
+                //    accuracy = Math.Round(accuracy * 100, 2);
+                //    obs_communicator.update_text($"Accuracy: {accuracy}%");
+                //}
+                //else
+                //{
+                //    obs_communicator.update_text($"Accuracy: 0%");
+                //}
             }
         }
 
@@ -503,6 +381,7 @@ namespace xemuh2stats
             Program.exec_resolver.Add(new offset_resolver_item("players", 0x35A44F4, ""));
             Program.exec_resolver.Add(new offset_resolver_item("game_results_globals", 0x35ACFB0, ""));
             Program.exec_resolver.Add(new offset_resolver_item("game_results_globals_extra", 0x35CF014, ""));
+            Program.exec_resolver.Add(new offset_resolver_item("disable_rendering", 0x3520E22, ""));
 
             Program.game_state_resolver.Add(new offset_resolver_item("game_state_players", 0, "players"));
             Program.game_state_resolver.Add(new offset_resolver_item("game_ending", 0, ""));
@@ -557,6 +436,43 @@ namespace xemuh2stats
             IEnumerable<byte> rv = mem.Concat(mem2);
             File.WriteAllBytes("dump.bin", rv.ToArray());
             
+        }
+
+        private void disable_rendering_check_box_CheckedChanged(object sender, EventArgs e)
+        {
+            Program.memory.WriteBool(Program.exec_resolver["disable_rendering"].address, !disable_rendering_check_box.Checked, false);
+        }
+
+        private void configuration_save_button_Click(object sender, EventArgs e)
+        {
+            if (configuration_combo_box.SelectedIndex == -1)
+            {
+                configuration config = Program.configurations.add(instance_name_text_box.Text);
+                config.set("instance_name", instance_name_text_box.Text);
+                config.set("xemu_path", xemu_path_text_box.Text);
+                config.set("dedi_mode", profile_disabled_check_box.Checked.ToString());
+                config.save();
+            }
+            else
+            {
+                configuration config = Program.configurations[(string)configuration_combo_box.SelectedItem];
+                config.set("instance_name", instance_name_text_box.Text);
+                config.set("xemu_path", xemu_path_text_box.Text);
+                config.set("dedi_mode", profile_disabled_check_box.Checked.ToString());
+                config.save();
+            }
+        }
+
+        private void configuration_combo_box_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (configuration_combo_box.SelectedIndex != -1)
+            {
+                configuration config = Program.configurations[(string)configuration_combo_box.SelectedItem];
+
+                instance_name_text_box.Text = config.get("instance_name", "");
+                xemu_path_text_box.Text = config.get("xemu_path", "");
+                profile_disabled_check_box.Checked = config.get("dedi_mode", "False") == "True";
+            }
         }
     }
 
