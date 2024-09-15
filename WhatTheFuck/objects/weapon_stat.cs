@@ -51,6 +51,10 @@ namespace xemuh2stats.objects
         public static s_weapon_stat get_weapon_stats(int player_index, int weapon_index)
         {
             var addr = Program.exec_resolver["weapon_stats"].address + (player_index * 0x36a) + (weapon_index * 0x10);
+
+            if (player_index > 4)
+                addr = Program.exec_resolver["game_results_globals_extra"].address + 0xDE + ((player_index - 5) * 0x36A) + (weapon_index * 0x10);
+
             return new s_weapon_stat()
             {
                 kills = Program.memory.ReadUShort(addr),
@@ -63,6 +67,11 @@ namespace xemuh2stats.objects
             //var data = Program.memory.ReadMemory(false, Program.game_state_resolver["weapon_stats"].address + (player_index * 0x36a) + (weapon_index * 0x10), 0x10);
 
             // return CastBytesTo<s_weapon_stat>(data, 0, 0x10);
+        }
+
+        public static long get_addr(int player_index)
+        {
+            return Program.exec_resolver["weapon_stats"].address + (player_index * 0x36a);
         }
     }
 }

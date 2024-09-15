@@ -40,7 +40,16 @@ namespace xemuh2stats.objects
         public static s_medal_stats get(int player_index)
         {
             var addr = Program.exec_resolver["medal_stats"].address + player_index * 0x36A;
+
+            if (player_index > 4)
+                addr = Program.exec_resolver["game_results_globals_extra"].address + 0x4C + ((player_index - 5) * 0x36A);
+
             return Program.CastBytesTo<s_medal_stats>(Program.memory.ReadMemory(false, addr, 48), 0, 48);
+        }
+
+        public static long get_addr(int player_index)
+        {
+            return Program.exec_resolver["medal_stats"].address + player_index * 0x36A;
         }
     }
 }

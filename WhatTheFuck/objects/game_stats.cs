@@ -43,7 +43,15 @@ namespace xemuh2stats.objects
         {
             var addr = Program.exec_resolver["game_stats"].address + player_index * 0x36A;
 
+            if (player_index > 4)
+                addr = Program.exec_resolver["game_results_globals_extra"].address + (player_index - 5) * 0x36A;
+
             return Program.CastBytesTo<s_game_stats>(Program.memory.ReadMemory(false, addr, 48), 0, 48);
+        }
+
+        public static long get_addr(int player_index)
+        {
+            return Program.exec_resolver["game_stats"].address + player_index * 0x36A;
         }
     }
 }

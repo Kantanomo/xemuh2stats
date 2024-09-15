@@ -446,9 +446,10 @@ namespace xemuh2stats
                 var player = real_time_player_stats.get(i);
                 debug_table.Rows[i].Cells[0].Value = player.name;
 
-                debug_table.Rows[i].Cells[1].Value = player.game_stats.oddball_score;
-                debug_table.Rows[i].Cells[2].Value = player.game_stats.oddball_ball_kills;
-                debug_table.Rows[i].Cells[3].Value = player.game_stats.assault_bomb_grabbed;
+                debug_table.Rows[i].Cells[1].Value = player.player_index;
+                debug_table.Rows[i].Cells[2].Value = player.game_addr.ToString("X");
+                debug_table.Rows[i].Cells[3].Value = player.medal_addr.ToString("X");
+                debug_table.Rows[i].Cells[4].Value = player.weapon_addr.ToString("X");
             }
         }
 
@@ -500,6 +501,11 @@ namespace xemuh2stats
             Program.exec_resolver.Add(new offset_resolver_item("variant_info", 0x35AD0EC, ""));
             Program.exec_resolver.Add(new offset_resolver_item("profile_enabled", 0x3569128, ""));
             Program.exec_resolver.Add(new offset_resolver_item("players", 0x35A44F4, ""));
+            Program.exec_resolver.Add(new offset_resolver_item("game_results_globals", 0x35ACFB0, ""));
+            Program.exec_resolver.Add(new offset_resolver_item("game_results_globals_extra", 0x35CF014, ""));
+
+            Program.game_state_resolver.Add(new offset_resolver_item("game_state_players", 0, "players"));
+            Program.game_state_resolver.Add(new offset_resolver_item("game_ending", 0, ""));
 
             // xemu base_address + xbe base_address
             var host_base_executable_address = (long)qmp.Translate(0x80000000) + 0x5C000;
@@ -532,15 +538,25 @@ namespace xemuh2stats
                         FileName = xemu_path,
                         Arguments = "-qmp tcp:localhost:4444,server,nowait",
                     };
-                    Process.Start(startInfo);
+                    Process p = Process.Start(startInfo);
                     System.Threading.Thread.Sleep(5000);
                     qmp = new QmpProxy();
 
-                    Program.memory = new MemoryHandler(Process.GetProcessesByName("xemu")[0]);
+                    Program.memory = new MemoryHandler(p);
                     resolve_addresses();
                     is_valid = true;
                 }
             }
+        }
+
+        private void dump_stats_to_binary_button_Click(object sender, EventArgs e)
+        {
+            var mem = Program.memory.ReadMemory(false, Program.exec_resolver["game_results_globals"].address, 0xDD8C);
+            var mem2 = Program.memory.ReadMemory(false, Program.exec_resolver["game_results_globals_extra"].address, 0x1980);
+
+            IEnumerable<byte> rv = mem.Concat(mem2);
+            File.WriteAllBytes("dump.bin", rv.ToArray());
+            
         }
     }
 

@@ -65,6 +65,7 @@
             this.debug_tab = new System.Windows.Forms.TabPage();
             this.debug_table = new System.Windows.Forms.DataGridView();
             this.asdf_1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.debug_index_column = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.asdf_2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.asdf_3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.asdf_4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -74,6 +75,7 @@
             this.variant_status_label = new System.Windows.Forms.ToolStripStatusLabel();
             this.game_type_status_label = new System.Windows.Forms.ToolStripStatusLabel();
             this.map_status_label = new System.Windows.Forms.ToolStripStatusLabel();
+            this.dump_stats_to_binary_button = new System.Windows.Forms.Button();
             this.main_tab_control.SuspendLayout();
             this.setup_tab_page.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -417,6 +419,7 @@
             // 
             // debug_tab
             // 
+            this.debug_tab.Controls.Add(this.dump_stats_to_binary_button);
             this.debug_tab.Controls.Add(this.debug_table);
             this.debug_tab.Location = new System.Drawing.Point(4, 22);
             this.debug_tab.Name = "debug_tab";
@@ -431,12 +434,13 @@
             this.debug_table.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.debug_table.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.asdf_1,
+            this.debug_index_column,
             this.asdf_2,
             this.asdf_3,
             this.asdf_4});
             this.debug_table.Location = new System.Drawing.Point(3, 6);
             this.debug_table.Name = "debug_table";
-            this.debug_table.Size = new System.Drawing.Size(756, 612);
+            this.debug_table.Size = new System.Drawing.Size(756, 525);
             this.debug_table.TabIndex = 0;
             // 
             // asdf_1
@@ -444,19 +448,24 @@
             this.asdf_1.HeaderText = "name";
             this.asdf_1.Name = "asdf_1";
             // 
+            // debug_index_column
+            // 
+            this.debug_index_column.HeaderText = "player_index";
+            this.debug_index_column.Name = "debug_index_column";
+            // 
             // asdf_2
             // 
-            this.asdf_2.HeaderText = "score";
+            this.asdf_2.HeaderText = "game_addr";
             this.asdf_2.Name = "asdf_2";
             // 
             // asdf_3
             // 
-            this.asdf_3.HeaderText = "kills";
+            this.asdf_3.HeaderText = "medal_addr";
             this.asdf_3.Name = "asdf_3";
             // 
             // asdf_4
             // 
-            this.asdf_4.HeaderText = "kills as";
+            this.asdf_4.HeaderText = "weapon_addr";
             this.asdf_4.Name = "asdf_4";
             // 
             // main_timer
@@ -502,6 +511,16 @@
             this.map_status_label.Name = "map_status_label";
             this.map_status_label.Size = new System.Drawing.Size(34, 17);
             this.map_status_label.Text = "Map:";
+            // 
+            // dump_stats_to_binary_button
+            // 
+            this.dump_stats_to_binary_button.Location = new System.Drawing.Point(6, 537);
+            this.dump_stats_to_binary_button.Name = "dump_stats_to_binary_button";
+            this.dump_stats_to_binary_button.Size = new System.Drawing.Size(69, 21);
+            this.dump_stats_to_binary_button.TabIndex = 21;
+            this.dump_stats_to_binary_button.Text = "dump";
+            this.dump_stats_to_binary_button.UseVisualStyleBackColor = true;
+            this.dump_stats_to_binary_button.Click += new System.EventHandler(this.dump_stats_to_binary_button_Click);
             // 
             // Form1
             // 
@@ -568,16 +587,18 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn column_kda;
         private System.Windows.Forms.TabPage debug_tab;
         private System.Windows.Forms.DataGridView debug_table;
-        private System.Windows.Forms.DataGridViewTextBoxColumn asdf_1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn asdf_2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn asdf_3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn asdf_4;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckBox profile_disabled_check_box;
         private System.Windows.Forms.Button xemu_browse_button;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox xemu_path_text_box;
         private System.Windows.Forms.Button xemu_launch_button;
+        private System.Windows.Forms.DataGridViewTextBoxColumn asdf_1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn debug_index_column;
+        private System.Windows.Forms.DataGridViewTextBoxColumn asdf_2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn asdf_3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn asdf_4;
+        private System.Windows.Forms.Button dump_stats_to_binary_button;
     }
 }
 

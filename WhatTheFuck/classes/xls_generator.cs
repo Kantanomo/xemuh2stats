@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,9 @@ namespace xemuh2stats.classes
     {
         public static void dump_game_to_sheet(string filename, List<real_time_player_stats> real_time_player_stats, List<s_post_game_player> post_game_player_stats)
         {
+            if (!Directory.Exists($"{AppDomain.CurrentDomain.BaseDirectory}/stats/"))
+                Directory.CreateDirectory($"{AppDomain.CurrentDomain.BaseDirectory}/stats/");
+
             string filePath = $"{AppDomain.CurrentDomain.BaseDirectory}/stats/{filename}.xlsx";
             // Create a spreadsheet document.
             using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Create(filePath, SpreadsheetDocumentType.Workbook))

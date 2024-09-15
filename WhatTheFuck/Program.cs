@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.ExtendedProperties;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using xemuh2stats.classes;
 using xemuh2stats.objects;
+using Application = System.Windows.Forms.Application;
 
 namespace xemuh2stats
 {
@@ -32,24 +34,11 @@ namespace xemuh2stats
 
         public static T CastBytesTo<T>(byte[] data, int startIndex, int length)
         {
-            byte[] fixedData = new byte[length];
-            unsafe
-            {
-                fixed (byte* pSource = data, pTarget = fixedData)
-                {
-                    int index = 0;
-                    for (int i = startIndex; i < data.Length; i++)
-                    {
-                        pTarget[index] = pSource[i];
-                        index++;
-                    }
-                }
-
-                fixed (byte* p = &fixedData[0])
-                {
-                    return (T)Marshal.PtrToStructure(new IntPtr(p), typeof(T));
-                }
-            }
+            // Pin the managed memory while, copy it out the data, then unpin it
+            GCHandle handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+            T theStructure = (T)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(T));
+            handle.Free();
+            return theStructure;
         }
 
     }
