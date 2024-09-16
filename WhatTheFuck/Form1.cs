@@ -39,6 +39,7 @@ namespace xemuh2stats
         public static DateTime StartTime;
         public static s_variant_details variant_details_cache;
 
+        public static Process xemu_proccess;
 
         public static List<real_time_player_stats> real_time_cache = new List<real_time_player_stats>();
         public static QmpProxy qmp;
@@ -74,6 +75,17 @@ namespace xemuh2stats
 
         private void main_timer_Tick(object sender, EventArgs e)
         {
+            if (xemu_proccess != null)
+            {
+                if (xemu_proccess.HasExited)
+                {
+                    is_valid = false;
+                    configuration_combo_box.Enabled = true;
+                    settings_group_box.Enabled = true;
+                    xemu_launch_button.Enabled = true;
+                }
+            }
+
             if (is_valid)
             {
                 var game_ending = Program.memory.ReadBool(Program.game_state_resolver["game_ending"].address);
@@ -415,15 +427,20 @@ namespace xemuh2stats
                     ProcessStartInfo startInfo = new ProcessStartInfo
                     {
                         FileName = xemu_path,
-                        Arguments = "-qmp tcp:localhost:4444,server,nowait",
+                        Arguments = $"-qmp tcp:localhost:{int.Parse(xemu_port_text_box.Text)},server,nowait",
                     };
-                    Process p = Process.Start(startInfo);
+                    xemu_proccess = Process.Start(startInfo);
                     System.Threading.Thread.Sleep(5000);
-                    qmp = new QmpProxy();
 
-                    Program.memory = new MemoryHandler(p);
+                    qmp = new QmpProxy(int.Parse(xemu_port_text_box.Text));
+
+                    Program.memory = new MemoryHandler(xemu_proccess);
                     resolve_addresses();
                     is_valid = true;
+
+                    configuration_combo_box.Enabled = false;
+                    settings_group_box.Enabled = false;
+                    xemu_launch_button.Enabled = false;
                 }
             }
         }
@@ -451,7 +468,24 @@ namespace xemuh2stats
                 config.set("instance_name", instance_name_text_box.Text);
                 config.set("xemu_path", xemu_path_text_box.Text);
                 config.set("dedi_mode", profile_disabled_check_box.Checked.ToString());
+                config.set("xemu_port", xemu_port_text_box.Text);
                 config.save();
+
+
+                configuration_combo_box.Items.Clear();
+                foreach (configuration configuration in Program.configurations.AsList)
+                {
+                    configuration_combo_box.Items.Add(configuration.name);
+                }
+
+                for (var i = 0; i < configuration_combo_box.Items.Count; i++)
+                {
+                    if (configuration_combo_box.Items[i].ToString() == instance_name_text_box.Text)
+                    {
+                        configuration_combo_box.SelectedIndex = i;
+                        break;
+                    }
+                }
             }
             else
             {
@@ -459,6 +493,7 @@ namespace xemuh2stats
                 config.set("instance_name", instance_name_text_box.Text);
                 config.set("xemu_path", xemu_path_text_box.Text);
                 config.set("dedi_mode", profile_disabled_check_box.Checked.ToString());
+                config.set("xemu_port", xemu_port_text_box.Text);
                 config.save();
             }
         }
@@ -472,7 +507,22 @@ namespace xemuh2stats
                 instance_name_text_box.Text = config.get("instance_name", "");
                 xemu_path_text_box.Text = config.get("xemu_path", "");
                 profile_disabled_check_box.Checked = config.get("dedi_mode", "False") == "True";
+                xemu_port_text_box.Text = config.get("xemu_port", "4444");
             }
+        }
+
+        private void new_configuration_button_Click(object sender, EventArgs e)
+        {
+            configuration_combo_box.SelectedIndex = -1;
+            instance_name_text_box.Text = "";
+            xemu_path_text_box.Text = "";
+            profile_disabled_check_box.Checked = false;
+            xemu_port_text_box.Text = "4444";
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            xemu_proccess?.Kill();
         }
     }
 

@@ -21,15 +21,22 @@ namespace WhatTheFuck.classes
             if(!Directory.Exists(root_path))
                 Directory.CreateDirectory(root_path);
 
+            load();
+        }
+
+        public void load()
+        {
+            List.Clear();
             foreach (var file in Directory.GetFiles(root_path))
             {
                 if (Path.GetExtension(file) == ".json")
                 {
-                    configuration config = new configuration(file, Path.GetFileName(file));
+                    configuration config = new configuration(file, Path.GetFileName(file).Replace(".json", ""));
                     List.Add(config);
                 }
             }
         }
+
         public configuration this[string name] => 
             List.Cast<configuration>().FirstOrDefault(config => config.name == name);
 

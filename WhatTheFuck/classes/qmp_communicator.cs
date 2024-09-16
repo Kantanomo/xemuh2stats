@@ -116,11 +116,11 @@ public class QEMUMonitorProtocol
         }
     }
 
-    public Dictionary<string, object> Connect()
+    public Dictionary<string, object> Connect(int port)
     {
         try
         {
-            _sock.Connect(_address, 4444);
+            _sock.Connect(_address, port);
             return NegotiateCapabilities();
         }
         catch (SocketException e)
@@ -230,12 +230,12 @@ public class QmpProxy
 
     private QEMUMonitorProtocol _qmp;
 
-    public QmpProxy()
+    public QmpProxy(int port)
     {
-        Connect();
+        Connect(port);
     }
 
-    private void Connect()
+    private void Connect(int port)
     {
         int i = 0;
         while (true)
@@ -248,7 +248,7 @@ public class QmpProxy
             try
             {
                 _qmp = new QEMUMonitorProtocol("localhost", false);
-                _qmp.Connect();
+                _qmp.Connect(port);
             }
             catch (Exception e)
             {

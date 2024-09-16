@@ -31,8 +31,12 @@
             this.components = new System.ComponentModel.Container();
             this.main_tab_control = new System.Windows.Forms.TabControl();
             this.setup_tab_page = new System.Windows.Forms.TabPage();
+            this.new_configuration_button = new System.Windows.Forms.Button();
             this.configuration_save_button = new System.Windows.Forms.Button();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.settings_group_box = new System.Windows.Forms.GroupBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.xemu_port_text_box = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.instance_name_text_box = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.xemu_path_text_box = new System.Windows.Forms.TextBox();
@@ -78,7 +82,7 @@
             this.map_status_label = new System.Windows.Forms.ToolStripStatusLabel();
             this.main_tab_control.SuspendLayout();
             this.setup_tab_page.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            this.settings_group_box.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.players_tab_page.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.players_table)).BeginInit();
@@ -103,8 +107,9 @@
             // 
             // setup_tab_page
             // 
+            this.setup_tab_page.Controls.Add(this.new_configuration_button);
             this.setup_tab_page.Controls.Add(this.configuration_save_button);
-            this.setup_tab_page.Controls.Add(this.groupBox2);
+            this.setup_tab_page.Controls.Add(this.settings_group_box);
             this.setup_tab_page.Controls.Add(this.configuration_combo_box);
             this.setup_tab_page.Controls.Add(this.label1);
             this.setup_tab_page.Controls.Add(this.xemu_launch_button);
@@ -116,6 +121,16 @@
             this.setup_tab_page.Text = "setup";
             this.setup_tab_page.UseVisualStyleBackColor = true;
             // 
+            // new_configuration_button
+            // 
+            this.new_configuration_button.Location = new System.Drawing.Point(290, 10);
+            this.new_configuration_button.Name = "new_configuration_button";
+            this.new_configuration_button.Size = new System.Drawing.Size(69, 21);
+            this.new_configuration_button.TabIndex = 26;
+            this.new_configuration_button.Text = "New";
+            this.new_configuration_button.UseVisualStyleBackColor = true;
+            this.new_configuration_button.Click += new System.EventHandler(this.new_configuration_button_Click);
+            // 
             // configuration_save_button
             // 
             this.configuration_save_button.Location = new System.Drawing.Point(215, 10);
@@ -126,27 +141,60 @@
             this.configuration_save_button.UseVisualStyleBackColor = true;
             this.configuration_save_button.Click += new System.EventHandler(this.configuration_save_button_Click);
             // 
-            // groupBox2
+            // settings_group_box
             // 
-            this.groupBox2.Controls.Add(this.instance_name_text_box);
-            this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Controls.Add(this.xemu_path_text_box);
-            this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Controls.Add(this.groupBox1);
-            this.groupBox2.Controls.Add(this.xemu_browse_button);
-            this.groupBox2.Location = new System.Drawing.Point(6, 50);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(756, 461);
-            this.groupBox2.TabIndex = 25;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Settings";
+            this.settings_group_box.Controls.Add(this.label5);
+            this.settings_group_box.Controls.Add(this.xemu_port_text_box);
+            this.settings_group_box.Controls.Add(this.label4);
+            this.settings_group_box.Controls.Add(this.instance_name_text_box);
+            this.settings_group_box.Controls.Add(this.label2);
+            this.settings_group_box.Controls.Add(this.xemu_path_text_box);
+            this.settings_group_box.Controls.Add(this.label3);
+            this.settings_group_box.Controls.Add(this.groupBox1);
+            this.settings_group_box.Controls.Add(this.xemu_browse_button);
+            this.settings_group_box.Location = new System.Drawing.Point(6, 50);
+            this.settings_group_box.Name = "settings_group_box";
+            this.settings_group_box.Size = new System.Drawing.Size(756, 461);
+            this.settings_group_box.TabIndex = 25;
+            this.settings_group_box.TabStop = false;
+            this.settings_group_box.Text = "Settings";
+            // 
+            // label5
+            // 
+            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(206, 78);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(205, 13);
+            this.label5.TabIndex = 27;
+            this.label5.Text = "This port must be unique per configuration";
+            this.label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // xemu_port_text_box
+            // 
+            this.xemu_port_text_box.Location = new System.Drawing.Point(100, 75);
+            this.xemu_port_text_box.Name = "xemu_port_text_box";
+            this.xemu_port_text_box.Size = new System.Drawing.Size(101, 20);
+            this.xemu_port_text_box.TabIndex = 3;
+            this.xemu_port_text_box.Text = "4444";
+            // 
+            // label4
+            // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 78);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(56, 13);
+            this.label4.TabIndex = 26;
+            this.label4.Text = "Xemu Port";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // instance_name_text_box
             // 
             this.instance_name_text_box.Location = new System.Drawing.Point(100, 23);
             this.instance_name_text_box.Name = "instance_name_text_box";
             this.instance_name_text_box.Size = new System.Drawing.Size(361, 20);
-            this.instance_name_text_box.TabIndex = 23;
+            this.instance_name_text_box.TabIndex = 1;
             // 
             // label2
             // 
@@ -164,7 +212,7 @@
             this.xemu_path_text_box.Location = new System.Drawing.Point(100, 49);
             this.xemu_path_text_box.Name = "xemu_path_text_box";
             this.xemu_path_text_box.Size = new System.Drawing.Size(361, 20);
-            this.xemu_path_text_box.TabIndex = 17;
+            this.xemu_path_text_box.TabIndex = 2;
             this.xemu_path_text_box.Text = "F:\\xemu";
             // 
             // label3
@@ -182,7 +230,7 @@
             // 
             this.groupBox1.Controls.Add(this.disable_rendering_check_box);
             this.groupBox1.Controls.Add(this.profile_disabled_check_box);
-            this.groupBox1.Location = new System.Drawing.Point(6, 92);
+            this.groupBox1.Location = new System.Drawing.Point(6, 101);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(744, 72);
             this.groupBox1.TabIndex = 16;
@@ -528,11 +576,12 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "Form1";
             this.Text = "I hate my life";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.main_tab_control.ResumeLayout(false);
             this.setup_tab_page.ResumeLayout(false);
             this.setup_tab_page.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            this.settings_group_box.ResumeLayout(false);
+            this.settings_group_box.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.players_tab_page.ResumeLayout(false);
@@ -592,10 +641,14 @@
         private System.Windows.Forms.CheckBox disable_rendering_check_box;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox configuration_combo_box;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox settings_group_box;
         private System.Windows.Forms.TextBox instance_name_text_box;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button configuration_save_button;
+        private System.Windows.Forms.Button new_configuration_button;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox xemu_port_text_box;
+        private System.Windows.Forms.Label label4;
     }
 }
 
