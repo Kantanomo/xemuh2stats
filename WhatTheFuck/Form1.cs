@@ -583,7 +583,8 @@ namespace xemuh2stats
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            xemu_proccess?.Kill();
+            if(xemu_proccess?.HasExited == false)
+                xemu_proccess.Kill();
         }
 
         private void obs_connect_button_Click(object sender, EventArgs e)
