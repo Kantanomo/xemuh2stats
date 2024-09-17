@@ -7,12 +7,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
+using OBSWebsocketDotNet.Types;
 
 namespace xemuh2stats.objects
 {
     public static class obs_communicator
     {
         public static OBSWebsocket obs;
+        public static bool connected = false;
+        public static List<SceneBasicInfo> Scenes;
+        public static string current_scene;
 
         public static void connect(string url, string password)
         {
@@ -20,28 +24,49 @@ namespace xemuh2stats.objects
             obs.Connected += onConnect;
             obs.Disconnected += onDisconnect;
             obs.CurrentProgramSceneChanged += onCurrentProgramSceneChanged;
-            obs.ConnectAsync(url, password);
+            obs.Connect(url, password);
             
+        }
+
+        public static void disconnect()
+        {
+            obs.Disconnect();
         }
 
         private static void onConnect(object sender, EventArgs e)
         {
-
+            connected = true;
+            Scenes = obs.GetSceneList().Scenes;
+            current_scene = obs.GetCurrentProgramScene();
         }
 
         private static void onDisconnect(object sender, OBSWebsocketDotNet.Communication.ObsDisconnectionInfo e)
         {
-
+            connected = false;
         }
 
         private static void onCurrentProgramSceneChanged(object sender, ProgramSceneChangedEventArgs args)
         {
-
+            current_scene = args.SceneName;
         }
 
-        public static void update_text(string text)
+        public static List<SceneBasicInfo> get_scenes()
         {
-            obs.SetInputSettings("banana", new JObject(){{"text", text}});
+            return obs.GetSceneList().Scenes;
+        }
+
+        public static void update_text(string source, string text)
+        {
+            if (!connected) return;
+
+            try
+            {
+                obs.SetInputSettings(source, new JObject() {{"text", text}});
+            }
+            catch
+            {
+
+            }
         }
     }
 }

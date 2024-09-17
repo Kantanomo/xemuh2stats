@@ -74,6 +74,26 @@
             this.asdf_2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.asdf_3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.asdf_4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.obs_tab_page = new System.Windows.Forms.TabPage();
+            this.label10 = new System.Windows.Forms.Label();
+            this.obs_kills_source_text_box = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.obs_accuracy_source_text_box = new System.Windows.Forms.TextBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.obs_scene_link_refresh_players_button = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.obs_scene_link_table = new System.Windows.Forms.DataGridView();
+            this.obs_scene_player_scene_column = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.obs_scene_player_name_column = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.obs_status_label = new System.Windows.Forms.Label();
+            this.obs_connect_button = new System.Windows.Forms.Button();
+            this.label8 = new System.Windows.Forms.Label();
+            this.obs_password_text_box = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.obs_port_text_box = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.obs_host_text_box = new System.Windows.Forms.TextBox();
             this.main_timer = new System.Windows.Forms.Timer(this.components);
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.life_cycle_status_label = new System.Windows.Forms.ToolStripStatusLabel();
@@ -90,6 +110,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.weapon_stat_table)).BeginInit();
             this.debug_tab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.debug_table)).BeginInit();
+            this.obs_tab_page.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.obs_scene_link_table)).BeginInit();
+            this.groupBox2.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -99,6 +123,7 @@
             this.main_tab_control.Controls.Add(this.players_tab_page);
             this.main_tab_control.Controls.Add(this.weapon_stats_tab);
             this.main_tab_control.Controls.Add(this.debug_tab);
+            this.main_tab_control.Controls.Add(this.obs_tab_page);
             this.main_tab_control.Location = new System.Drawing.Point(12, 12);
             this.main_tab_control.Name = "main_tab_control";
             this.main_tab_control.SelectedIndex = 0;
@@ -522,6 +547,194 @@
             this.asdf_4.HeaderText = "weapon_addr";
             this.asdf_4.Name = "asdf_4";
             // 
+            // obs_tab_page
+            // 
+            this.obs_tab_page.Controls.Add(this.label10);
+            this.obs_tab_page.Controls.Add(this.obs_kills_source_text_box);
+            this.obs_tab_page.Controls.Add(this.label9);
+            this.obs_tab_page.Controls.Add(this.obs_accuracy_source_text_box);
+            this.obs_tab_page.Controls.Add(this.groupBox3);
+            this.obs_tab_page.Controls.Add(this.groupBox2);
+            this.obs_tab_page.Location = new System.Drawing.Point(4, 22);
+            this.obs_tab_page.Name = "obs_tab_page";
+            this.obs_tab_page.Padding = new System.Windows.Forms.Padding(3);
+            this.obs_tab_page.Size = new System.Drawing.Size(768, 624);
+            this.obs_tab_page.TabIndex = 4;
+            this.obs_tab_page.Text = "obs configuration";
+            this.obs_tab_page.UseVisualStyleBackColor = true;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(266, 105);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(93, 13);
+            this.label10.TabIndex = 10;
+            this.label10.Text = "Kills Source Name";
+            // 
+            // obs_kills_source_text_box
+            // 
+            this.obs_kills_source_text_box.Location = new System.Drawing.Point(392, 102);
+            this.obs_kills_source_text_box.Name = "obs_kills_source_text_box";
+            this.obs_kills_source_text_box.Size = new System.Drawing.Size(100, 20);
+            this.obs_kills_source_text_box.TabIndex = 9;
+            this.obs_kills_source_text_box.Text = "kills";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(266, 79);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(120, 13);
+            this.label9.TabIndex = 8;
+            this.label9.Text = "Accuracy Source Name";
+            // 
+            // obs_accuracy_source_text_box
+            // 
+            this.obs_accuracy_source_text_box.Location = new System.Drawing.Point(392, 76);
+            this.obs_accuracy_source_text_box.Name = "obs_accuracy_source_text_box";
+            this.obs_accuracy_source_text_box.Size = new System.Drawing.Size(100, 20);
+            this.obs_accuracy_source_text_box.TabIndex = 5;
+            this.obs_accuracy_source_text_box.Text = "accuracy";
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.obs_scene_link_refresh_players_button);
+            this.groupBox3.Controls.Add(this.button1);
+            this.groupBox3.Controls.Add(this.obs_scene_link_table);
+            this.groupBox3.Location = new System.Drawing.Point(6, 60);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(247, 250);
+            this.groupBox3.TabIndex = 1;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Scene Linking";
+            // 
+            // obs_scene_link_refresh_players_button
+            // 
+            this.obs_scene_link_refresh_players_button.Location = new System.Drawing.Point(109, 224);
+            this.obs_scene_link_refresh_players_button.Name = "obs_scene_link_refresh_players_button";
+            this.obs_scene_link_refresh_players_button.Size = new System.Drawing.Size(91, 20);
+            this.obs_scene_link_refresh_players_button.TabIndex = 9;
+            this.obs_scene_link_refresh_players_button.Text = "Refresh Players";
+            this.obs_scene_link_refresh_players_button.UseVisualStyleBackColor = true;
+            this.obs_scene_link_refresh_players_button.Click += new System.EventHandler(this.obs_scene_link_refresh_players_button_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(9, 224);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(94, 20);
+            this.button1.TabIndex = 8;
+            this.button1.Text = "Refresh Scenes";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // obs_scene_link_table
+            // 
+            this.obs_scene_link_table.AllowUserToAddRows = false;
+            this.obs_scene_link_table.AllowUserToDeleteRows = false;
+            this.obs_scene_link_table.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.obs_scene_link_table.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.obs_scene_player_scene_column,
+            this.obs_scene_player_name_column});
+            this.obs_scene_link_table.Location = new System.Drawing.Point(3, 16);
+            this.obs_scene_link_table.Name = "obs_scene_link_table";
+            this.obs_scene_link_table.Size = new System.Drawing.Size(244, 202);
+            this.obs_scene_link_table.TabIndex = 0;
+            // 
+            // obs_scene_player_scene_column
+            // 
+            this.obs_scene_player_scene_column.HeaderText = "Scene";
+            this.obs_scene_player_scene_column.Name = "obs_scene_player_scene_column";
+            // 
+            // obs_scene_player_name_column
+            // 
+            this.obs_scene_player_name_column.HeaderText = "Player Name";
+            this.obs_scene_player_name_column.Name = "obs_scene_player_name_column";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.obs_status_label);
+            this.groupBox2.Controls.Add(this.obs_connect_button);
+            this.groupBox2.Controls.Add(this.label8);
+            this.groupBox2.Controls.Add(this.obs_password_text_box);
+            this.groupBox2.Controls.Add(this.label7);
+            this.groupBox2.Controls.Add(this.obs_port_text_box);
+            this.groupBox2.Controls.Add(this.label6);
+            this.groupBox2.Controls.Add(this.obs_host_text_box);
+            this.groupBox2.Location = new System.Drawing.Point(6, 6);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(756, 48);
+            this.groupBox2.TabIndex = 0;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Connection Settings";
+            // 
+            // obs_status_label
+            // 
+            this.obs_status_label.AutoSize = true;
+            this.obs_status_label.Location = new System.Drawing.Point(519, 23);
+            this.obs_status_label.Name = "obs_status_label";
+            this.obs_status_label.Size = new System.Drawing.Size(79, 13);
+            this.obs_status_label.TabIndex = 7;
+            this.obs_status_label.Text = "Not Connected";
+            // 
+            // obs_connect_button
+            // 
+            this.obs_connect_button.Location = new System.Drawing.Point(438, 19);
+            this.obs_connect_button.Name = "obs_connect_button";
+            this.obs_connect_button.Size = new System.Drawing.Size(75, 20);
+            this.obs_connect_button.TabIndex = 6;
+            this.obs_connect_button.Text = "Connect";
+            this.obs_connect_button.UseVisualStyleBackColor = true;
+            this.obs_connect_button.Click += new System.EventHandler(this.obs_connect_button_Click);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(273, 22);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(53, 13);
+            this.label8.TabIndex = 5;
+            this.label8.Text = "Password";
+            // 
+            // obs_password_text_box
+            // 
+            this.obs_password_text_box.Location = new System.Drawing.Point(332, 19);
+            this.obs_password_text_box.Name = "obs_password_text_box";
+            this.obs_password_text_box.Size = new System.Drawing.Size(100, 20);
+            this.obs_password_text_box.TabIndex = 4;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(135, 22);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(26, 13);
+            this.label7.TabIndex = 3;
+            this.label7.Text = "Port";
+            // 
+            // obs_port_text_box
+            // 
+            this.obs_port_text_box.Location = new System.Drawing.Point(167, 19);
+            this.obs_port_text_box.Name = "obs_port_text_box";
+            this.obs_port_text_box.Size = new System.Drawing.Size(100, 20);
+            this.obs_port_text_box.TabIndex = 2;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 22);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(17, 13);
+            this.label6.TabIndex = 1;
+            this.label6.Text = "IP";
+            // 
+            // obs_host_text_box
+            // 
+            this.obs_host_text_box.Location = new System.Drawing.Point(29, 19);
+            this.obs_host_text_box.Name = "obs_host_text_box";
+            this.obs_host_text_box.Size = new System.Drawing.Size(100, 20);
+            this.obs_host_text_box.TabIndex = 0;
+            // 
             // main_timer
             // 
             this.main_timer.Enabled = true;
@@ -590,6 +803,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.weapon_stat_table)).EndInit();
             this.debug_tab.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.debug_table)).EndInit();
+            this.obs_tab_page.ResumeLayout(false);
+            this.obs_tab_page.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.obs_scene_link_table)).EndInit();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -649,6 +868,26 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox xemu_port_text_box;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TabPage obs_tab_page;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox obs_password_text_box;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox obs_port_text_box;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox obs_host_text_box;
+        private System.Windows.Forms.Button obs_connect_button;
+        private System.Windows.Forms.Label obs_status_label;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.DataGridView obs_scene_link_table;
+        private System.Windows.Forms.Button obs_scene_link_refresh_players_button;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TextBox obs_kills_source_text_box;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox obs_accuracy_source_text_box;
+        private System.Windows.Forms.DataGridViewComboBoxColumn obs_scene_player_scene_column;
+        private System.Windows.Forms.DataGridViewComboBoxColumn obs_scene_player_name_column;
     }
 }
 

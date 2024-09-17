@@ -43,12 +43,10 @@ namespace xemuh2stats
 
         public static List<real_time_player_stats> real_time_cache = new List<real_time_player_stats>();
         public static QmpProxy qmp;
-        
+
         public Form1()
         {
             InitializeComponent();
-
-            //obs_communicator.connect("ws://localhost:4455", "HTMwlVgpQ7jyQpJl");
 
             for (int i = 0; i < 16; i++)
             {
@@ -60,6 +58,11 @@ namespace xemuh2stats
             {
                 weapon_stat_table.Rows.Add();
                 weapon_stat_table.Rows[i].Cells[0].Value = weapon_stat.weapon_list[i];
+            }
+
+            for (int i = 0; i < 8; i++)
+            {
+                obs_scene_link_table.Rows.Add();
             }
 
             foreach (configuration configuration in Program.configurations.AsList)
@@ -97,7 +100,7 @@ namespace xemuh2stats
                         variant_details_cache = variant_details.get();
                         variant_details_cache.start_time = StartTime;
                         variant_details_cache.end_time = DateTime.Now;
-                        
+
                         int player_count =
                             Program.memory.ReadInt(Program.game_state_resolver["game_state_players"].address + 0x3C);
 
@@ -116,13 +119,14 @@ namespace xemuh2stats
                     real_time_lock = false;
                 }
 
-                var cycle = (life_cycle)Program.memory.ReadInt(Program.exec_resolver["life_cycle"].address);
-                
+                var cycle = (life_cycle) Program.memory.ReadInt(Program.exec_resolver["life_cycle"].address);
+
                 life_cycle_status_label.Text = $@"Life Cycle: {cycle.ToString()} |";
 
                 if (cycle == life_cycle.in_lobby)
                 {
-                    Program.memory.WriteBool(Program.exec_resolver["profile_enabled"].address,!profile_disabled_check_box.Checked, false);
+                    Program.memory.WriteBool(Program.exec_resolver["profile_enabled"].address,
+                        !profile_disabled_check_box.Checked, false);
                 }
 
                 if (cycle == life_cycle.in_game)
@@ -141,7 +145,7 @@ namespace xemuh2stats
                 {
                     time_lock = false;
                 }
-                
+
                 if (cycle == life_cycle.post_game)
                 {
                     if (!dump_lock)
@@ -154,7 +158,8 @@ namespace xemuh2stats
                             post_game_.Add(post_game_report.get(i));
                         }
 
-                        xls_generator.dump_game_to_sheet($"{timestamp}", real_time_cache, post_game_, variant_details_cache);
+                        xls_generator.dump_game_to_sheet($"{timestamp}", real_time_cache, post_game_,
+                            variant_details_cache);
                         dump_lock = true;
                     }
                 }
@@ -182,6 +187,67 @@ namespace xemuh2stats
                     }
                 }
 
+                if (cycle == life_cycle.in_game)
+                {
+                    //weapon_stat.s_weapon_stat astat = weapon_stat.get_weapon_stats(0, 5);
+
+                    //if (astat.shots_fired != 0 && astat.shots_hit != 0)
+                    //{
+                    //    double accuracy = (double)astat.shots_hit / astat.shots_fired;
+                    //    accuracy = Math.Round(accuracy * 100, 2);
+                    //    obs_communicator.update_text("accuracy", $"Accuracy: {accuracy}%");
+                    //}
+                    //else
+                    //{
+                    //    obs_communicator.update_text("accuracy", $"Accuracy: 0%");
+                    //}
+
+                    //obs_communicator.update_text("kills", $"Kills: {astat.kills}");
+
+                    if(!string.IsNullOrEmpty(obs_communicator.current_scene))
+                    {
+                        for (var i = 0; i < obs_scene_link_table.Rows.Count; i++)
+                        {
+                            if(((DataGridViewComboBoxCell)obs_scene_link_table.Rows[i].Cells[0]).Value == null)
+                                continue;
+
+                            if (((DataGridViewComboBoxCell) obs_scene_link_table.Rows[i].Cells[0]).Value.ToString() ==
+                                obs_communicator.current_scene)
+                            {
+                                for (var j = 0; j < 16; j++)
+                                {
+                                    if(((DataGridViewComboBoxCell)obs_scene_link_table.Rows[i].Cells[1]).Value == null)
+                                        continue;
+
+                                    string name = Program.memory.ReadStringUnicode(
+                                        Program.exec_resolver["session_players"].address + (j * 0xA4), 16, false);
+
+                                    if (((DataGridViewComboBoxCell) obs_scene_link_table.Rows[i].Cells[1]).Value.ToString() == name)
+                                    {
+                                        weapon_stat.s_weapon_stat astat = weapon_stat.get_weapon_stats(j, 5);
+
+                                        if (astat.shots_fired != 0 && astat.shots_hit != 0)
+                                        {
+                                            double accuracy = (double) astat.shots_hit / astat.shots_fired;
+                                            accuracy = Math.Round(accuracy * 100, 2);
+                                            obs_communicator.update_text("accuracy", $"Accuracy: {accuracy}%");
+                                        }
+                                        else
+                                        {
+                                            obs_communicator.update_text("accuracy", $"Accuracy: 0%");
+                                        }
+
+                                        obs_communicator.update_text("kills", $"Kills: {astat.kills}");
+
+                                        break;
+                                    }
+                                }
+
+                                break;
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -207,18 +273,20 @@ namespace xemuh2stats
                     }
 
                     weapon_player_select.Items.Add(name);
-                        if (cur == name)
-                            ncur = i;
+                    if (cur == name)
+                        ncur = i;
                 }
 
                 weapon_player_select.SelectedIndex = ncur;
 
             }
+
             if (weapon_player_select.SelectedIndex != -1)
             {
                 for (int i = 0; i < weapon_stat.weapon_list.Count; i++)
                 {
-                    weapon_stat.s_weapon_stat stat = weapon_stat.get_weapon_stats(weapon_player_select.SelectedIndex, i);
+                    weapon_stat.s_weapon_stat
+                        stat = weapon_stat.get_weapon_stats(weapon_player_select.SelectedIndex, i);
                     weapon_stat_table.Rows[i].Cells[1].Value = stat.kills;
                     weapon_stat_table.Rows[i].Cells[2].Value = stat.head_shots;
                     weapon_stat_table.Rows[i].Cells[3].Value = stat.deaths;
@@ -226,18 +294,6 @@ namespace xemuh2stats
                     weapon_stat_table.Rows[i].Cells[5].Value = stat.shots_fired;
                     weapon_stat_table.Rows[i].Cells[6].Value = stat.shots_hit;
                 }
-                //weapon_stat.s_weapon_stat astat = weapon_stat.get_weapon_stats(weapon_player_select.SelectedIndex, 5);
-
-                //if (astat.shots_fired != 0 && astat.shots_hit != 0)
-                //{
-                //    double accuracy = (double)astat.shots_hit / astat.shots_fired;
-                //    accuracy = Math.Round(accuracy * 100, 2);
-                //    obs_communicator.update_text($"Accuracy: {accuracy}%");
-                //}
-                //else
-                //{
-                //    obs_communicator.update_text($"Accuracy: 0%");
-                //}
             }
         }
 
@@ -245,7 +301,7 @@ namespace xemuh2stats
         {
             int test_player_count =
                 Program.memory.ReadInt(Program.game_state_resolver["game_state_players"].address + 0x3C);
-            
+
             var variant = variant_details.get();
             for (int i = 0; i < test_player_count; i++)
             {
@@ -317,7 +373,8 @@ namespace xemuh2stats
                 players_table.Rows[i].Cells[4].Value = player.game_stats.assists;
                 if (player.game_stats.deaths > 0)
                 {
-                    float kda = (float)(player.game_stats.kills + player.game_stats.assists) / player.game_stats.deaths;
+                    float kda = (float) (player.game_stats.kills + player.game_stats.assists) /
+                                player.game_stats.deaths;
                     players_table.Rows[i].Cells[5].Value = Math.Round(kda, 3);
                 }
                 else
@@ -354,6 +411,7 @@ namespace xemuh2stats
                 }
             }
         }
+
         private string FindFileInDirectory(string folderPath, string fileNameToFind)
         {
             try
@@ -363,7 +421,7 @@ namespace xemuh2stats
                 {
                     if (Path.GetFileName(file).Equals(fileNameToFind, StringComparison.OrdinalIgnoreCase))
                     {
-                        return file;  // Return the full path of the file if found
+                        return file; // Return the full path of the file if found
                     }
                 }
             }
@@ -376,7 +434,7 @@ namespace xemuh2stats
                 return "";
             }
 
-            return null;  // Return null if the file is not found
+            return null; // Return null if the file is not found
         }
 
         private void resolve_addresses()
@@ -394,13 +452,14 @@ namespace xemuh2stats
             Program.exec_resolver.Add(new offset_resolver_item("game_results_globals", 0x35ACFB0, ""));
             Program.exec_resolver.Add(new offset_resolver_item("game_results_globals_extra", 0x35CF014, ""));
             Program.exec_resolver.Add(new offset_resolver_item("disable_rendering", 0x3520E22, ""));
+            Program.exec_resolver.Add(new offset_resolver_item("lobby_players", 0x35CC008, ""));
 
             Program.game_state_resolver.Add(new offset_resolver_item("game_state_players", 0, "players"));
             Program.game_state_resolver.Add(new offset_resolver_item("game_ending", 0, ""));
 
             // xemu base_address + xbe base_address
-            var host_base_executable_address = (long)qmp.Translate(0x80000000) + 0x5C000;
-            
+            var host_base_executable_address = (long) qmp.Translate(0x80000000) + 0x5C000;
+
             foreach (offset_resolver_item offsetResolverItem in Program.exec_resolver)
             {
                 offsetResolverItem.address = host_base_executable_address + offsetResolverItem.offset;
@@ -410,7 +469,7 @@ namespace xemuh2stats
 
             var taddr = qmp.Translate(test);
 
-            Program.game_state_resolver["game_state_players"].address = (long)taddr;
+            Program.game_state_resolver["game_state_players"].address = (long) taddr;
             Program.game_state_resolver["game_ending"].address = (long) taddr - 0x1E8;
 
             main_tab_control.TabPages.Add(players_tab_page);
@@ -448,16 +507,18 @@ namespace xemuh2stats
         private void dump_stats_to_binary_button_Click(object sender, EventArgs e)
         {
             var mem = Program.memory.ReadMemory(false, Program.exec_resolver["game_results_globals"].address, 0xDD8C);
-            var mem2 = Program.memory.ReadMemory(false, Program.exec_resolver["game_results_globals_extra"].address, 0x1980);
+            var mem2 = Program.memory.ReadMemory(false, Program.exec_resolver["game_results_globals_extra"].address,
+                0x1980);
 
             IEnumerable<byte> rv = mem.Concat(mem2);
             File.WriteAllBytes("dump.bin", rv.ToArray());
-            
+
         }
 
         private void disable_rendering_check_box_CheckedChanged(object sender, EventArgs e)
         {
-            Program.memory.WriteBool(Program.exec_resolver["disable_rendering"].address, !disable_rendering_check_box.Checked, false);
+            Program.memory.WriteBool(Program.exec_resolver["disable_rendering"].address,
+                !disable_rendering_check_box.Checked, false);
         }
 
         private void configuration_save_button_Click(object sender, EventArgs e)
@@ -489,7 +550,7 @@ namespace xemuh2stats
             }
             else
             {
-                configuration config = Program.configurations[(string)configuration_combo_box.SelectedItem];
+                configuration config = Program.configurations[(string) configuration_combo_box.SelectedItem];
                 config.set("instance_name", instance_name_text_box.Text);
                 config.set("xemu_path", xemu_path_text_box.Text);
                 config.set("dedi_mode", profile_disabled_check_box.Checked.ToString());
@@ -502,7 +563,7 @@ namespace xemuh2stats
         {
             if (configuration_combo_box.SelectedIndex != -1)
             {
-                configuration config = Program.configurations[(string)configuration_combo_box.SelectedItem];
+                configuration config = Program.configurations[(string) configuration_combo_box.SelectedItem];
 
                 instance_name_text_box.Text = config.get("instance_name", "");
                 xemu_path_text_box.Text = config.get("xemu_path", "");
@@ -523,6 +584,58 @@ namespace xemuh2stats
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             xemu_proccess?.Kill();
+        }
+
+        private void obs_connect_button_Click(object sender, EventArgs e)
+        {
+
+            if (!obs_communicator.connected)
+            {
+                obs_communicator.connect($"ws://{obs_host_text_box.Text}:{obs_port_text_box.Text}",
+                    obs_password_text_box.Text);
+
+                System.Threading.Thread.Sleep(200);
+
+                obs_status_label.Text = obs_communicator.connected ? "Connected!" : "Failed to Connect!";
+
+                obs_connect_button.Text = "Disconnect";
+
+                for (var i = 0; i < obs_scene_link_table.Rows.Count; i++)
+                {
+                    ((DataGridViewComboBoxCell) obs_scene_link_table.Rows[i].Cells[0]).Items.Clear();
+                    foreach (var sceneBasicInfo in obs_communicator.Scenes)
+                    {
+                        ((DataGridViewComboBoxCell) obs_scene_link_table.Rows[i].Cells[0]).Items.Add(
+                            sceneBasicInfo.Name);
+                    }
+                }
+            }
+            else
+            {
+                obs_communicator.disconnect();
+
+                obs_status_label.Text = "Disconnected";
+
+                obs_connect_button.Text = "Connect";
+            }
+        }
+
+        private void obs_scene_link_refresh_players_button_Click(object sender, EventArgs e)
+        {
+            for (var i = 0; i < obs_scene_link_table.Rows.Count; i++)
+            {
+                ((DataGridViewComboBoxCell) obs_scene_link_table.Rows[i].Cells[1]).Items.Clear();
+                for (var j = 0; j < 16; j++)
+                {
+                    string player_name =
+                        Program.memory.ReadStringUnicode(Program.exec_resolver["lobby_players"].address + (j * 0x10c),
+                            16, false);
+
+                    if (!string.IsNullOrEmpty(player_name))
+                        ((DataGridViewComboBoxCell) obs_scene_link_table.Rows[i].Cells[1]).Items.Add(player_name);
+
+                }
+            }
         }
     }
 
