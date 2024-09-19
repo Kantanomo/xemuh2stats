@@ -25,6 +25,7 @@ using WhatTheFuck.classes;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml;
 using System.Numerics;
+using WhatTheFuck.extensions;
 
 
 namespace xemuh2stats
@@ -306,27 +307,28 @@ namespace xemuh2stats
             for (int i = 0; i < test_player_count; i++)
             {
                 var player = real_time_player_stats.get(i);
-                players_table.Rows[i].Cells[0].Value = player.name;
+                players_table.Rows[i].Cells[0].Value = player.GetPlayerName();
+                players_table.Rows[i].Cells[1].Value = player.player.team_index.GetDisplayName();
 
                 switch (variant.game_type)
                 {
                     case game_type.capture_the_flag:
-                        players_table.Rows[i].Cells[1].Value = player.game_stats.ctf_scores;
+                        players_table.Rows[i].Cells[2].Value = player.game_stats.ctf_scores;
                         break;
                     case game_type.slayer:
-                        players_table.Rows[i].Cells[1].Value = player.game_stats.kills;
+                        players_table.Rows[i].Cells[2].Value = player.game_stats.kills;
                         break;
                     case game_type.oddball:
                         if (player.game_stats.oddball_score > 0)
                         {
                             try
                             {
-                                players_table.Rows[i].Cells[1].Value =
+                                players_table.Rows[i].Cells[2].Value =
                                     TimeSpan.FromSeconds(player.game_stats.oddball_score).ToString("mm:ss");
                             }
                             catch (Exception)
                             {
-                                players_table.Rows[i].Cells[1].Value = player.game_stats.oddball_score;
+                                players_table.Rows[i].Cells[2].Value = player.game_stats.oddball_score;
                             }
                         }
 
@@ -335,51 +337,51 @@ namespace xemuh2stats
                     {
                         try
                         {
-                            players_table.Rows[i].Cells[1].Value =
+                            players_table.Rows[i].Cells[2].Value =
                                 TimeSpan.FromSeconds(player.game_stats.oddball_score).ToString("mm:ss");
                         }
                         catch (Exception)
                         {
-                            players_table.Rows[i].Cells[1].Value = player.game_stats.oddball_score;
+                            players_table.Rows[i].Cells[2].Value = player.game_stats.oddball_score;
                         }
                     }
                         break;
                     case game_type.juggeraut:
-                        players_table.Rows[i].Cells[1].Value = player.game_stats.kills_as_juggernaut;
+                        players_table.Rows[i].Cells[2].Value = player.game_stats.kills_as_juggernaut;
                         break;
                     case game_type.territories:
                     {
                         try
                         {
-                            players_table.Rows[i].Cells[1].Value =
+                            players_table.Rows[i].Cells[2].Value =
                                 TimeSpan.FromSeconds(player.game_stats.oddball_score).ToString("mm:ss");
                         }
                         catch (Exception)
                         {
-                            players_table.Rows[i].Cells[1].Value = player.game_stats.oddball_score;
+                            players_table.Rows[i].Cells[2].Value = player.game_stats.oddball_score;
                         }
                     }
                         break;
                     case game_type.assault:
-                        players_table.Rows[i].Cells[1].Value = player.game_stats.assault_score;
+                        players_table.Rows[i].Cells[2].Value = player.game_stats.assault_score;
                         break;
                     default:
-                        players_table.Rows[i].Cells[1].Value = player.game_stats.kills;
+                        players_table.Rows[i].Cells[2].Value = player.game_stats.kills;
                         break;
                 }
 
-                players_table.Rows[i].Cells[2].Value = player.game_stats.kills;
-                players_table.Rows[i].Cells[3].Value = player.game_stats.deaths;
-                players_table.Rows[i].Cells[4].Value = player.game_stats.assists;
+                players_table.Rows[i].Cells[3].Value = player.game_stats.kills;
+                players_table.Rows[i].Cells[4].Value = player.game_stats.deaths;
+                players_table.Rows[i].Cells[5].Value = player.game_stats.assists;
                 if (player.game_stats.deaths > 0)
                 {
                     float kda = (float) (player.game_stats.kills + player.game_stats.assists) /
                                 player.game_stats.deaths;
-                    players_table.Rows[i].Cells[5].Value = Math.Round(kda, 3);
+                    players_table.Rows[i].Cells[6].Value = Math.Round(kda, 3);
                 }
                 else
                 {
-                    players_table.Rows[i].Cells[5].Value = player.game_stats.kills + player.game_stats.assists;
+                    players_table.Rows[i].Cells[6].Value = player.game_stats.kills + player.game_stats.assists;
                 }
             }
         }
@@ -391,7 +393,7 @@ namespace xemuh2stats
             for (int i = 0; i < test_player_count; i++)
             {
                 var player = real_time_player_stats.get(i);
-                debug_table.Rows[i].Cells[0].Value = player.name;
+                debug_table.Rows[i].Cells[0].Value = player.GetPlayerName();
 
                 debug_table.Rows[i].Cells[1].Value = player.player_index;
                 debug_table.Rows[i].Cells[2].Value = player.game_addr.ToString("X");

@@ -297,7 +297,7 @@ namespace xemuh2stats.classes
                 Row playerRow = new Row();
                 Cell cell = new Cell()
                 {
-                    CellValue = new CellValue(player.name),
+                    CellValue = new CellValue(player.GetPlayerName()),
                     DataType = new EnumValue<CellValues>(CellValues.String)
                 };
                 playerRow.Append(cell);
@@ -369,7 +369,7 @@ namespace xemuh2stats.classes
 
                 Cell cell = new Cell()
                 {
-                    CellValue = new CellValue(player.name),
+                    CellValue = new CellValue(player.GetPlayerName()),
                     DataType = new EnumValue<CellValues>(CellValues.String)
                 };
                 playerRow.Append(cell);
@@ -425,7 +425,7 @@ namespace xemuh2stats.classes
 
                 Cell cell = new Cell()
                 {
-                    CellValue = new CellValue(player.name),
+                    CellValue = new CellValue(player.GetPlayerName()),
                     DataType = new EnumValue<CellValues>(CellValues.String)
                 };
                 playerRow.Append(cell);

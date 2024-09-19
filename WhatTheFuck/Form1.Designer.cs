@@ -50,12 +50,6 @@
             this.xemu_launch_button = new System.Windows.Forms.Button();
             this.players_tab_page = new System.Windows.Forms.TabPage();
             this.players_table = new System.Windows.Forms.DataGridView();
-            this.column_player_name = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.column_player_score = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.column_player_kills = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.column_player_deaths = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.column_player_assists = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.column_kda = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.weapon_stats_tab = new System.Windows.Forms.TabPage();
             this.weapon_player_select = new System.Windows.Forms.ComboBox();
             this.weapon_stat_table = new System.Windows.Forms.DataGridView();
@@ -100,6 +94,13 @@
             this.variant_status_label = new System.Windows.Forms.ToolStripStatusLabel();
             this.game_type_status_label = new System.Windows.Forms.ToolStripStatusLabel();
             this.map_status_label = new System.Windows.Forms.ToolStripStatusLabel();
+            this.column_player_name = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.column_player_team = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.column_player_score = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.column_player_kills = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.column_player_deaths = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.column_player_assists = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.column_kda = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.main_tab_control.SuspendLayout();
             this.setup_tab_page.SuspendLayout();
             this.settings_group_box.SuspendLayout();
@@ -342,6 +343,7 @@
             this.players_table.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.players_table.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.column_player_name,
+            this.column_player_team,
             this.column_player_score,
             this.column_player_kills,
             this.column_player_deaths,
@@ -352,47 +354,6 @@
             this.players_table.ReadOnly = true;
             this.players_table.Size = new System.Drawing.Size(756, 599);
             this.players_table.TabIndex = 0;
-            // 
-            // column_player_name
-            // 
-            this.column_player_name.HeaderText = "Player Name";
-            this.column_player_name.Name = "column_player_name";
-            this.column_player_name.ReadOnly = true;
-            this.column_player_name.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // column_player_score
-            // 
-            this.column_player_score.HeaderText = "Score";
-            this.column_player_score.Name = "column_player_score";
-            this.column_player_score.ReadOnly = true;
-            // 
-            // column_player_kills
-            // 
-            this.column_player_kills.HeaderText = "Kills";
-            this.column_player_kills.Name = "column_player_kills";
-            this.column_player_kills.ReadOnly = true;
-            this.column_player_kills.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // column_player_deaths
-            // 
-            this.column_player_deaths.HeaderText = "Deaths";
-            this.column_player_deaths.Name = "column_player_deaths";
-            this.column_player_deaths.ReadOnly = true;
-            this.column_player_deaths.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // column_player_assists
-            // 
-            this.column_player_assists.HeaderText = "Assists";
-            this.column_player_assists.Name = "column_player_assists";
-            this.column_player_assists.ReadOnly = true;
-            this.column_player_assists.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // column_kda
-            // 
-            this.column_kda.HeaderText = "KDA";
-            this.column_kda.Name = "column_kda";
-            this.column_kda.ReadOnly = true;
-            this.column_kda.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // weapon_stats_tab
             // 
@@ -779,6 +740,53 @@
             this.map_status_label.Size = new System.Drawing.Size(34, 17);
             this.map_status_label.Text = "Map:";
             // 
+            // column_player_name
+            // 
+            this.column_player_name.HeaderText = "Player Name";
+            this.column_player_name.Name = "column_player_name";
+            this.column_player_name.ReadOnly = true;
+            this.column_player_name.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // column_player_team
+            // 
+            this.column_player_team.HeaderText = "Team";
+            this.column_player_team.Name = "column_player_team";
+            this.column_player_team.ReadOnly = true;
+            // 
+            // column_player_score
+            // 
+            this.column_player_score.HeaderText = "Score";
+            this.column_player_score.Name = "column_player_score";
+            this.column_player_score.ReadOnly = true;
+            // 
+            // column_player_kills
+            // 
+            this.column_player_kills.HeaderText = "Kills";
+            this.column_player_kills.Name = "column_player_kills";
+            this.column_player_kills.ReadOnly = true;
+            this.column_player_kills.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // column_player_deaths
+            // 
+            this.column_player_deaths.HeaderText = "Deaths";
+            this.column_player_deaths.Name = "column_player_deaths";
+            this.column_player_deaths.ReadOnly = true;
+            this.column_player_deaths.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // column_player_assists
+            // 
+            this.column_player_assists.HeaderText = "Assists";
+            this.column_player_assists.Name = "column_player_assists";
+            this.column_player_assists.ReadOnly = true;
+            this.column_player_assists.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // column_kda
+            // 
+            this.column_kda.HeaderText = "KDA";
+            this.column_kda.Name = "column_kda";
+            this.column_kda.ReadOnly = true;
+            this.column_kda.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -837,12 +845,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn weapon_suicide_column;
         private System.Windows.Forms.DataGridViewTextBoxColumn weapon_shots_fired_column;
         private System.Windows.Forms.DataGridViewTextBoxColumn weapon_shots_hit_column;
-        private System.Windows.Forms.DataGridViewTextBoxColumn column_player_name;
-        private System.Windows.Forms.DataGridViewTextBoxColumn column_player_score;
-        private System.Windows.Forms.DataGridViewTextBoxColumn column_player_kills;
-        private System.Windows.Forms.DataGridViewTextBoxColumn column_player_deaths;
-        private System.Windows.Forms.DataGridViewTextBoxColumn column_player_assists;
-        private System.Windows.Forms.DataGridViewTextBoxColumn column_kda;
         private System.Windows.Forms.TabPage debug_tab;
         private System.Windows.Forms.DataGridView debug_table;
         private System.Windows.Forms.GroupBox groupBox1;
@@ -888,6 +890,13 @@
         private System.Windows.Forms.TextBox obs_accuracy_source_text_box;
         private System.Windows.Forms.DataGridViewComboBoxColumn obs_scene_player_scene_column;
         private System.Windows.Forms.DataGridViewComboBoxColumn obs_scene_player_name_column;
+        private System.Windows.Forms.DataGridViewTextBoxColumn column_player_name;
+        private System.Windows.Forms.DataGridViewTextBoxColumn column_player_team;
+        private System.Windows.Forms.DataGridViewTextBoxColumn column_player_score;
+        private System.Windows.Forms.DataGridViewTextBoxColumn column_player_kills;
+        private System.Windows.Forms.DataGridViewTextBoxColumn column_player_deaths;
+        private System.Windows.Forms.DataGridViewTextBoxColumn column_player_assists;
+        private System.Windows.Forms.DataGridViewTextBoxColumn column_kda;
     }
 }
 
