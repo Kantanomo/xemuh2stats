@@ -18,6 +18,19 @@ namespace WhatTheFuck.classes
         public Dictionary<string, string> arguments { get; set; }
     }
 
+    internal class websocket_response<T>
+    {
+        public string message_type;
+        public string response_type;
+        public T response;
+
+        public websocket_response(string message_type, string response_type, T response)
+        {
+            this.message_type = message_type;
+            this.response = response;
+        }
+    }
+
     internal class websocket_response_error
     {
         public string message_type;
@@ -37,7 +50,7 @@ namespace WhatTheFuck.classes
             var cycle = (life_cycle)Program.memory.ReadInt(Program.exec_resolver["life_cycle"].address);
             Dictionary<string, string> result = new Dictionary<string, string>();
             result.Add("life_cycle", cycle.ToString());
-            return JsonConvert.SerializeObject(result);
+            return JsonConvert.SerializeObject(new websocket_response<Dictionary<string, string>>("get_life_cycle", "", result));
         }
 
         public static string websocket_message_get_player(Dictionary<string, string> arguments)
@@ -70,26 +83,26 @@ namespace WhatTheFuck.classes
                 {
                     Dictionary<string, real_time_player_stats> result = new Dictionary<string, real_time_player_stats>();
                     result.Add(player.GetPlayerName(), player);
-                    return JsonConvert.SerializeObject(result);
+                    return JsonConvert.SerializeObject(new websocket_response<Dictionary<string, real_time_player_stats>>("get_player", arguments["type"], result));
                 }
                 case "game_stats":
                 {
                     Dictionary<string, s_game_stats> result = new Dictionary<string, s_game_stats>();
                     result.Add(player.GetPlayerName(), player.game_stats);
-                    return JsonConvert.SerializeObject(result);
+                    return JsonConvert.SerializeObject(new websocket_response<Dictionary<string, s_game_stats>>("get_player", arguments["type"], result));
                     }
                 case "medals":
                 {
                     Dictionary<string, s_medal_stats> result = new Dictionary<string, s_medal_stats>();
                     result.Add(player.GetPlayerName(), player.medal_stats);
-                    return JsonConvert.SerializeObject(result);
-                }
+                    return JsonConvert.SerializeObject(new websocket_response<Dictionary<string, s_medal_stats>>("get_player", arguments["type"], result));
+                    }
                 case "weapons":
                 {
                     Dictionary<string, Dictionary<string, weapon_stat.s_weapon_stat>> result = new Dictionary<string, Dictionary<string, weapon_stat.s_weapon_stat>>();
                     result.Add(player.GetPlayerName(), player.weapon_stats);
-                    return JsonConvert.SerializeObject(result);
-                }
+                    return JsonConvert.SerializeObject(new websocket_response<Dictionary<string, Dictionary<string, weapon_stat.s_weapon_stat>>>("get_player", arguments["type"], result));
+                    }
                 default:
                     return JsonConvert.SerializeObject(new websocket_response_error("get_player", "A invalid type was provided for the request"));
             }
@@ -115,8 +128,8 @@ namespace WhatTheFuck.classes
                         players.Add(player_.GetPlayerName(), player_);
                     }
 
-                    return JsonConvert.SerializeObject(players);
-                }
+                    return JsonConvert.SerializeObject(new websocket_response<Dictionary<string, real_time_player_stats>>("get_players", arguments["type"], players));
+                    }
 
                 case "game_stats":
                 {
@@ -127,7 +140,7 @@ namespace WhatTheFuck.classes
                         players.Add(player_.GetPlayerName(), player_.game_stats);
                     }
 
-                    return JsonConvert.SerializeObject(players);
+                    return JsonConvert.SerializeObject(new websocket_response<Dictionary<string, s_game_stats>>("get_players", arguments["type"], players));
                 }
 
                 case "properties":
@@ -140,8 +153,8 @@ namespace WhatTheFuck.classes
                         players.Add(player_.GetPlayerName(), player_.player);
                     }
 
-                    return JsonConvert.SerializeObject(players);
-                }
+                    return JsonConvert.SerializeObject(new websocket_response<Dictionary<string, s_player_properties>>("get_players", arguments["type"], players));
+                    }
 
                 case "medals":
                 {
@@ -153,8 +166,8 @@ namespace WhatTheFuck.classes
                         players.Add(player_.GetPlayerName(), player_.medal_stats);
                     }
 
-                    return JsonConvert.SerializeObject(players);
-                }
+                    return JsonConvert.SerializeObject(new websocket_response<Dictionary<string, s_medal_stats>>("get_players", arguments["type"], players));
+                    }
                 case "weapons":
                 {
                     Dictionary<string, Dictionary<string, weapon_stat.s_weapon_stat>> players = new Dictionary<string, Dictionary<string, weapon_stat.s_weapon_stat>>();
@@ -165,7 +178,7 @@ namespace WhatTheFuck.classes
                         players.Add(player_.GetPlayerName(), player_.weapon_stats);
                     }
 
-                    return JsonConvert.SerializeObject(players);
+                    return JsonConvert.SerializeObject(new websocket_response<Dictionary<string, Dictionary<string, weapon_stat.s_weapon_stat>>>("get_players", arguments["type"], players));
                     }
                 default:
                     return JsonConvert.SerializeObject(new websocket_response_error("get_players", "A invalid type was provided for the request"));
