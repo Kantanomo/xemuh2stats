@@ -502,6 +502,7 @@ namespace xemuh2stats
                     configuration_combo_box.Enabled = false;
                     settings_group_box.Enabled = false;
                     xemu_launch_button.Enabled = false;
+                    websocket_communicator.start(websocket_bind_text_box.Text, websocket_bind_port_text_box.Text);
                 }
             }
         }
@@ -532,6 +533,8 @@ namespace xemuh2stats
                 config.set("xemu_path", xemu_path_text_box.Text);
                 config.set("dedi_mode", profile_disabled_check_box.Checked.ToString());
                 config.set("xemu_port", xemu_port_text_box.Text);
+                config.set("websocket_bind", websocket_bind_text_box.Text);
+                config.set("websocket_port", websocket_bind_port_text_box.Text);
                 config.save();
 
 
@@ -557,6 +560,8 @@ namespace xemuh2stats
                 config.set("xemu_path", xemu_path_text_box.Text);
                 config.set("dedi_mode", profile_disabled_check_box.Checked.ToString());
                 config.set("xemu_port", xemu_port_text_box.Text);
+                config.set("websocket_bind", websocket_bind_text_box.Text);
+                config.set("websocket_port", websocket_bind_port_text_box.Text);
                 config.save();
             }
         }
@@ -571,6 +576,8 @@ namespace xemuh2stats
                 xemu_path_text_box.Text = config.get("xemu_path", "");
                 profile_disabled_check_box.Checked = config.get("dedi_mode", "False") == "True";
                 xemu_port_text_box.Text = config.get("xemu_port", "4444");
+                websocket_bind_text_box.Text = config.get("websocket_bind", "127.0.0.1");
+                websocket_bind_port_text_box.Text = config.get("websocket_port", "3333");
             }
         }
 
@@ -639,6 +646,11 @@ namespace xemuh2stats
 
                 }
             }
+        }
+
+        private void websocket_bind_link_label_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://networkengineering.stackexchange.com/a/59838");
         }
     }
 

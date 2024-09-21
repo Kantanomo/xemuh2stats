@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using DocumentFormat.OpenXml.VariantTypes;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace xemuh2stats.objects
 {
@@ -200,7 +201,7 @@ namespace xemuh2stats.objects
     [StructLayout(layoutKind: LayoutKind.Sequential, Pack = 1)]
     public struct s_player_profile_traits
     {
-        s_player_profile profile;
+        public s_player_profile profile;
         int gap_48;
         int gap_4C;
     };
@@ -216,11 +217,16 @@ namespace xemuh2stats.objects
     [StructLayout(layoutKind: LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Unicode)]
     public unsafe struct s_player_properties
     {
+        [JsonIgnore]
         public fixed char player_name[16];
+        [JsonIgnore]
         public int spawn_protection_time;
+        [JsonIgnore]
         public fixed byte gap_24[28];
         public s_player_profile_traits profile_traits;
+        [JsonIgnore] 
         public fixed char clan_name[16];
+        [JsonIgnore] 
         public s_clan_identifiers clan_identifiers;
         public e_game_team team_index;
         public e_handicap player_handicap_level;
@@ -238,8 +244,11 @@ namespace xemuh2stats.objects
         public s_game_stats game_stats;
         public s_medal_stats medal_stats;
         public Dictionary<string, weapon_stat.s_weapon_stat> weapon_stats;
+        [JsonIgnore]
         public long game_addr;
+        [JsonIgnore]
         public long medal_addr;
+        [JsonIgnore]
         public long weapon_addr;
         public int player_index;
 

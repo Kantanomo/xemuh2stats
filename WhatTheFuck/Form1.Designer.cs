@@ -34,6 +34,13 @@
             this.new_configuration_button = new System.Windows.Forms.Button();
             this.configuration_save_button = new System.Windows.Forms.Button();
             this.settings_group_box = new System.Windows.Forms.GroupBox();
+            this.websocket_bind_link_label = new System.Windows.Forms.LinkLabel();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.websocket_bind_port_text_box = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.websocket_bind_text_box = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.xemu_port_text_box = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -50,6 +57,13 @@
             this.xemu_launch_button = new System.Windows.Forms.Button();
             this.players_tab_page = new System.Windows.Forms.TabPage();
             this.players_table = new System.Windows.Forms.DataGridView();
+            this.column_player_name = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.column_player_team = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.column_player_score = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.column_player_kills = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.column_player_deaths = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.column_player_assists = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.column_kda = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.weapon_stats_tab = new System.Windows.Forms.TabPage();
             this.weapon_player_select = new System.Windows.Forms.ComboBox();
             this.weapon_stat_table = new System.Windows.Forms.DataGridView();
@@ -94,13 +108,6 @@
             this.variant_status_label = new System.Windows.Forms.ToolStripStatusLabel();
             this.game_type_status_label = new System.Windows.Forms.ToolStripStatusLabel();
             this.map_status_label = new System.Windows.Forms.ToolStripStatusLabel();
-            this.column_player_name = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.column_player_team = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.column_player_score = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.column_player_kills = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.column_player_deaths = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.column_player_assists = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.column_kda = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.main_tab_control.SuspendLayout();
             this.setup_tab_page.SuspendLayout();
             this.settings_group_box.SuspendLayout();
@@ -169,6 +176,13 @@
             // 
             // settings_group_box
             // 
+            this.settings_group_box.Controls.Add(this.websocket_bind_link_label);
+            this.settings_group_box.Controls.Add(this.label11);
+            this.settings_group_box.Controls.Add(this.label13);
+            this.settings_group_box.Controls.Add(this.websocket_bind_port_text_box);
+            this.settings_group_box.Controls.Add(this.label14);
+            this.settings_group_box.Controls.Add(this.websocket_bind_text_box);
+            this.settings_group_box.Controls.Add(this.label12);
             this.settings_group_box.Controls.Add(this.label5);
             this.settings_group_box.Controls.Add(this.xemu_port_text_box);
             this.settings_group_box.Controls.Add(this.label4);
@@ -184,6 +198,77 @@
             this.settings_group_box.TabIndex = 25;
             this.settings_group_box.TabStop = false;
             this.settings_group_box.Text = "Settings";
+            // 
+            // websocket_bind_link_label
+            // 
+            this.websocket_bind_link_label.AutoSize = true;
+            this.websocket_bind_link_label.Location = new System.Drawing.Point(472, 104);
+            this.websocket_bind_link_label.Name = "websocket_bind_link_label";
+            this.websocket_bind_link_label.Size = new System.Drawing.Size(52, 13);
+            this.websocket_bind_link_label.TabIndex = 35;
+            this.websocket_bind_link_label.TabStop = true;
+            this.websocket_bind_link_label.Text = "More Info";
+            this.websocket_bind_link_label.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.websocket_bind_link_label_LinkClicked);
+            // 
+            // label11
+            // 
+            this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(207, 104);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(259, 13);
+            this.label11.TabIndex = 34;
+            this.label11.Text = "This is the listening address for the websocket server ";
+            this.label11.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label13
+            // 
+            this.label13.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(206, 130);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(205, 13);
+            this.label13.TabIndex = 33;
+            this.label13.Text = "This port must be unique per configuration";
+            this.label13.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // websocket_bind_port_text_box
+            // 
+            this.websocket_bind_port_text_box.Location = new System.Drawing.Point(100, 127);
+            this.websocket_bind_port_text_box.Name = "websocket_bind_port_text_box";
+            this.websocket_bind_port_text_box.Size = new System.Drawing.Size(101, 20);
+            this.websocket_bind_port_text_box.TabIndex = 31;
+            this.websocket_bind_port_text_box.Text = "3333";
+            // 
+            // label14
+            // 
+            this.label14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(12, 130);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(84, 13);
+            this.label14.TabIndex = 32;
+            this.label14.Text = "Websocket Port";
+            this.label14.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // websocket_bind_text_box
+            // 
+            this.websocket_bind_text_box.Location = new System.Drawing.Point(100, 101);
+            this.websocket_bind_text_box.Name = "websocket_bind_text_box";
+            this.websocket_bind_text_box.Size = new System.Drawing.Size(101, 20);
+            this.websocket_bind_text_box.TabIndex = 28;
+            this.websocket_bind_text_box.Text = "127.0.0.1";
+            // 
+            // label12
+            // 
+            this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(12, 104);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(86, 13);
+            this.label12.TabIndex = 29;
+            this.label12.Text = "Websocket Bind";
+            this.label12.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // label5
             // 
@@ -256,7 +341,7 @@
             // 
             this.groupBox1.Controls.Add(this.disable_rendering_check_box);
             this.groupBox1.Controls.Add(this.profile_disabled_check_box);
-            this.groupBox1.Location = new System.Drawing.Point(6, 101);
+            this.groupBox1.Location = new System.Drawing.Point(6, 175);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(744, 72);
             this.groupBox1.TabIndex = 16;
@@ -354,6 +439,53 @@
             this.players_table.ReadOnly = true;
             this.players_table.Size = new System.Drawing.Size(756, 599);
             this.players_table.TabIndex = 0;
+            // 
+            // column_player_name
+            // 
+            this.column_player_name.HeaderText = "Player Name";
+            this.column_player_name.Name = "column_player_name";
+            this.column_player_name.ReadOnly = true;
+            this.column_player_name.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // column_player_team
+            // 
+            this.column_player_team.HeaderText = "Team";
+            this.column_player_team.Name = "column_player_team";
+            this.column_player_team.ReadOnly = true;
+            // 
+            // column_player_score
+            // 
+            this.column_player_score.HeaderText = "Score";
+            this.column_player_score.Name = "column_player_score";
+            this.column_player_score.ReadOnly = true;
+            // 
+            // column_player_kills
+            // 
+            this.column_player_kills.HeaderText = "Kills";
+            this.column_player_kills.Name = "column_player_kills";
+            this.column_player_kills.ReadOnly = true;
+            this.column_player_kills.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // column_player_deaths
+            // 
+            this.column_player_deaths.HeaderText = "Deaths";
+            this.column_player_deaths.Name = "column_player_deaths";
+            this.column_player_deaths.ReadOnly = true;
+            this.column_player_deaths.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // column_player_assists
+            // 
+            this.column_player_assists.HeaderText = "Assists";
+            this.column_player_assists.Name = "column_player_assists";
+            this.column_player_assists.ReadOnly = true;
+            this.column_player_assists.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // column_kda
+            // 
+            this.column_kda.HeaderText = "KDA";
+            this.column_kda.Name = "column_kda";
+            this.column_kda.ReadOnly = true;
+            this.column_kda.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // weapon_stats_tab
             // 
@@ -740,53 +872,6 @@
             this.map_status_label.Size = new System.Drawing.Size(34, 17);
             this.map_status_label.Text = "Map:";
             // 
-            // column_player_name
-            // 
-            this.column_player_name.HeaderText = "Player Name";
-            this.column_player_name.Name = "column_player_name";
-            this.column_player_name.ReadOnly = true;
-            this.column_player_name.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // column_player_team
-            // 
-            this.column_player_team.HeaderText = "Team";
-            this.column_player_team.Name = "column_player_team";
-            this.column_player_team.ReadOnly = true;
-            // 
-            // column_player_score
-            // 
-            this.column_player_score.HeaderText = "Score";
-            this.column_player_score.Name = "column_player_score";
-            this.column_player_score.ReadOnly = true;
-            // 
-            // column_player_kills
-            // 
-            this.column_player_kills.HeaderText = "Kills";
-            this.column_player_kills.Name = "column_player_kills";
-            this.column_player_kills.ReadOnly = true;
-            this.column_player_kills.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // column_player_deaths
-            // 
-            this.column_player_deaths.HeaderText = "Deaths";
-            this.column_player_deaths.Name = "column_player_deaths";
-            this.column_player_deaths.ReadOnly = true;
-            this.column_player_deaths.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // column_player_assists
-            // 
-            this.column_player_assists.HeaderText = "Assists";
-            this.column_player_assists.Name = "column_player_assists";
-            this.column_player_assists.ReadOnly = true;
-            this.column_player_assists.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // column_kda
-            // 
-            this.column_kda.HeaderText = "KDA";
-            this.column_kda.Name = "column_kda";
-            this.column_kda.ReadOnly = true;
-            this.column_kda.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -897,6 +982,13 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn column_player_deaths;
         private System.Windows.Forms.DataGridViewTextBoxColumn column_player_assists;
         private System.Windows.Forms.DataGridViewTextBoxColumn column_kda;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox websocket_bind_port_text_box;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.TextBox websocket_bind_text_box;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.LinkLabel websocket_bind_link_label;
     }
 }
 

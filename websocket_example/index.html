@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stats Websocket Example</title>
+    <style>
+        /* CSS Styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1, h2, h3, h4 {
+            color: #333;
+        }
+
+        label {
+            display: inline-block;
+            width: 120px;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"], select {
+            width: 200px;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 6px 12px;
+            font-size: 16px;
+        }
+
+        #playerDataDisplay, #lifeCycleDisplay, #selectedPlayerData {
+            margin-top: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #dddddd;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+
+        caption {
+            caption-side: top;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+        }
+
+        .player-section {
+            margin-bottom: 40px;
+        }
+
+        #connectionStatus {
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        #connectBtn {
+            margin-bottom: 20px;
+        }
+
+        .disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* Highlight selected row */
+        .selected-row {
+            background-color: #e0f7fa;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Stats Websocket Example</h1>
+
+<!-- Connection Inputs -->
+<label for="serverIp">Server IP:</label>
+<input type="text" id="serverIp" placeholder="e.g., localhost"><br>
+
+<label for="serverPort">Server Port:</label>
+<input type="text" id="serverPort" placeholder="e.g., 8080"><br>
+
+<button id="connectBtn">Connect</button>
+
+<p id="connectionStatus">Not connected</p>
+
+<!-- Data Type Selection -->
+<div id="dataTypeDiv">
+    <label for="dataType">Data Type:</label>
+    <select id="dataType">
+        <option value="properties">Properties</option>
+        <option value="game_stats">Game Stats</option>
+        <option value="medals">Medals</option>
+        <option value="weapons">Weapons</option>
+        <option value="full">Full</option>
+    </select><br>
+</div>
+
+<!-- The interface -->
+<div id="interface">
+    <!-- Area to display the response -->
+    <div id="lifeCycleDisplay"></div>
+    <div id="playerDataDisplay"></div>
+    <div id="selectedPlayerData"></div>
+</div>
+
+<script>
+    let socket = null;
+    let isConnected = false;
+    let updateInterval = null; // To store the interval ID
+    let selectedPlayer = null; // To store the selected player's name
+    let selectedDataType = 'properties'; // Default data type
+
+    document.getElementById('connectBtn').addEventListener('click', function () {
+        const serverIp = document.getElementById('serverIp').value.trim();
+        const serverPort = document.getElementById('serverPort').value.trim();
+
+        if (!serverIp || !serverPort) {
+            alert('Please enter both server IP and port.');
+            return;
+        }
+
+        const wsUrl = `ws://${serverIp}:${serverPort}`;
+        socket = new WebSocket(wsUrl);
+
+        socket.addEventListener('open', function (event) {
+            console.log('Connected to WebSocket server');
+            isConnected = true;
+            document.getElementById('connectionStatus').textContent = 'Connected to ' + wsUrl;
+            // Start the periodic updates
+            startPeriodicUpdates();
+        });
+
+        socket.addEventListener('message', function (event) {
+            const response = JSON.parse(event.data);
+
+            if (response.error_message) {
+                console.error('Error:', response.error_message);
+                document.getElementById('playerDataDisplay').innerHTML = '<p class="error-message">Error: ' + response.error_message + '</p>';
+                document.getElementById('lifeCycleDisplay').innerHTML = '';
+            } else if (response.life_cycle) {
+                handleLifeCycleResponse(response.life_cycle);
+            } else if (selectedPlayer && response[selectedPlayer] && (response[selectedPlayer].player || response[selectedPlayer].game_stats)) {
+                // This is the response to get_player for the selected player
+                displaySelectedPlayerData(response[selectedPlayer]);
+            } else if (Object.keys(response).length > 0) {
+                // This is the response to get_players
+                displayPlayersData(response);
+            } else {
+                console.warn('Unknown response structure:', response);
+            }
+        });
+
+        socket.addEventListener('error', function (event) {
+            console.error('WebSocket error:', event);
+            alert('WebSocket error. Please check the console for more details.');
+            document.getElementById('connectionStatus').textContent = 'Connection error';
+            isConnected = false;
+            stopPeriodicUpdates();
+        });
+
+        socket.addEventListener('close', function (event) {
+            console.log('WebSocket connection closed:', event);
+            alert('WebSocket connection closed.');
+            document.getElementById('connectionStatus').textContent = 'Not connected';
+            isConnected = false;
+            stopPeriodicUpdates();
+        });
+    });
+
+    document.getElementById('dataType').addEventListener('change', function () {
+        selectedDataType = this.value;
+        // Clear the selected player data since the data type has changed
+        selectedPlayer = null;
+        document.getElementById('selectedPlayerData').innerHTML = '';
+    });
+
+    function startPeriodicUpdates() {
+        // Check immediately and then every 5 seconds
+        checkLifeCycle();
+        updateInterval = setInterval(checkLifeCycle, 500);
+    }
+
+    function stopPeriodicUpdates() {
+        if (updateInterval) {
+            clearInterval(updateInterval);
+            updateInterval = null;
+        }
+    }
+
+    function checkLifeCycle() {
+        if (!isConnected || !socket || socket.readyState !== WebSocket.OPEN) {
+            return;
+        }
+
+        const message = {
+            message_type: 'get_life_cycle',
+            arguments: {}
+        };
+
+        socket.send(JSON.stringify(message));
+    }
+
+    function handleLifeCycleResponse(lifeCycleState) {
+        const lifeCycleDiv = document.getElementById('lifeCycleDisplay');
+        lifeCycleDiv.innerHTML = ''; // Clear previous data
+
+        const heading = document.createElement('h2');
+        heading.textContent = 'Current Life Cycle State';
+        lifeCycleDiv.appendChild(heading);
+
+        const stateParagraph = document.createElement('p');
+        stateParagraph.style.fontSize = '18px';
+        stateParagraph.textContent = lifeCycleState;
+        lifeCycleDiv.appendChild(stateParagraph);
+
+        if (lifeCycleState === 'in_game') {
+            // Send get_players request
+            requestPlayersData();
+
+            // If a player is selected, request data for that player
+            if (selectedPlayer) {
+                requestSelectedPlayerData();
+            }
+        } else {
+            // Clear player data display if not in_game
+            document.getElementById('playerDataDisplay').innerHTML = '';
+            document.getElementById('selectedPlayerData').innerHTML = '';
+        }
+    }
+
+    function requestPlayersData() {
+        if (!isConnected || !socket || socket.readyState !== WebSocket.OPEN) {
+            return;
+        }
+
+        const message = {
+            message_type: 'get_players',
+            arguments: {
+                type: selectedDataType
+            }
+        };
+
+        socket.send(JSON.stringify(message));
+    }
+
+    function requestSelectedPlayerData() {
+        if (!isConnected || !socket || socket.readyState !== WebSocket.OPEN) {
+            return;
+        }
+
+        const message = {
+            message_type: 'get_player',
+            arguments: {
+                type: 'full',
+                player: selectedPlayer
+            }
+        };
+
+        socket.send(JSON.stringify(message));
+    }
+
+    function displayPlayersData(response) {
+        const displayDiv = document.getElementById('playerDataDisplay');
+        displayDiv.innerHTML = ''; // Clear previous data
+
+        const playerNames = Object.keys(response);
+
+        if (playerNames.length === 0) {
+            displayDiv.innerHTML = '<p>No players found.</p>';
+            return;
+        }
+
+        // Deselect the selected player if they are no longer in the player list
+        if (selectedPlayer && !playerNames.includes(selectedPlayer)) {
+            selectedPlayer = null;
+            document.getElementById('selectedPlayerData').innerHTML = '';
+        }
+
+        const table = document.createElement('table');
+        const caption = table.createCaption();
+        caption.textContent = `Players ${formatDataType(selectedDataType)}`;
+
+        // Create table header
+        const headerRow = table.insertRow();
+        const sampleData = response[playerNames[0]];
+        let headers = ['Player Name'];
+
+        if (typeof sampleData === 'object' && sampleData !== null) {
+            headers = headers.concat(Object.keys(sampleData));
+        }
+
+        headers.forEach(header => {
+            const cell = headerRow.insertCell();
+            cell.outerHTML = `<th>${header}</th>`;
+        });
+
+        // Populate table rows
+        playerNames.forEach(playerName => {
+            const playerData = response[playerName];
+            const row = table.insertRow();
+            row.dataset.playerName = playerName; // Store player name in dataset
+            row.insertCell().textContent = playerName;
+
+            // Add click event listener to row
+            row.addEventListener('click', function () {
+                selectPlayer(row, playerName);
+            });
+
+            // Highlight the selected row
+            if (playerName === selectedPlayer) {
+                row.classList.add('selected-row');
+            }
+
+            headers.slice(1).forEach(key => {
+                const cell = row.insertCell();
+                const value = playerData[key];
+
+                if (typeof value === 'object' && value !== null) {
+                    cell.textContent = JSON.stringify(value);
+                } else {
+                    cell.textContent = value;
+                }
+            });
+        });
+
+        displayDiv.appendChild(table);
+    }
+
+    function selectPlayer(row, playerName) {
+        // Deselect previous selection
+        const previousSelectedRow = document.querySelector('.selected-row');
+        if (previousSelectedRow) {
+            previousSelectedRow.classList.remove('selected-row');
+        }
+
+        // Select the new row
+        row.classList.add('selected-row');
+        selectedPlayer = playerName;
+
+        // Request full data for the selected player
+        requestSelectedPlayerData();
+    }
+
+    function displaySelectedPlayerData(playerData) {
+        const displayDiv = document.getElementById('selectedPlayerData');
+        displayDiv.innerHTML = ''; // Clear previous data
+
+        const heading = document.createElement('h2');
+        heading.textContent = `Full Data for Player: ${selectedPlayer}`;
+        displayDiv.appendChild(heading);
+
+        // Display all available sections
+        if (playerData.player) {
+            const playerProps = playerData.player;
+            const propsTable = createStatsTable(playerProps, 'Player Properties');
+            displayDiv.appendChild(propsTable);
+        }
+
+        if (playerData.game_stats) {
+            const gameStats = playerData.game_stats;
+            const gameStatsTable = createStatsTable(gameStats, 'Game Stats');
+            displayDiv.appendChild(gameStatsTable);
+        }
+
+        if (playerData.medal_stats) {
+            const medalStats = playerData.medal_stats;
+            const medalStatsTable = createStatsTable(medalStats, 'Medal Stats');
+            displayDiv.appendChild(medalStatsTable);
+        }
+
+        if (playerData.weapon_stats) {
+            const weaponStats = playerData.weapon_stats;
+            const weaponStatsDiv = document.createElement('div');
+            weaponStatsDiv.innerHTML = `<h3>Weapon Stats</h3>`;
+            displayDiv.appendChild(weaponStatsDiv);
+
+            for (const weapon in weaponStats) {
+                const weaponData = weaponStats[weapon];
+                const weaponHeading = document.createElement('h4');
+                weaponHeading.textContent = weapon;
+                weaponStatsDiv.appendChild(weaponHeading);
+
+                const weaponTable = createStatsTable(weaponData, weapon);
+                weaponStatsDiv.appendChild(weaponTable);
+            }
+        }
+    }
+
+    function createStatsTable(statsObject, title) {
+        const table = document.createElement('table');
+        const caption = table.createCaption();
+        caption.textContent = title;
+
+        for (const key in statsObject) {
+            const value = statsObject[key];
+            const row = table.insertRow();
+            const cellKey = row.insertCell(0);
+            const cellValue = row.insertCell(1);
+            cellKey.textContent = key;
+
+            if (typeof value === 'object' && value !== null) {
+                // Recursively create a table for nested objects
+                const nestedTable = createStatsTable(value, key);
+                cellValue.appendChild(nestedTable);
+            } else {
+                cellValue.textContent = value;
+            }
+        }
+
+        return table;
+    }
+
+    function formatDataType(dataType) {
+        switch (dataType) {
+            case 'properties':
+                return 'Properties';
+            case 'game_stats':
+                return 'Game Stats';
+            case 'medals':
+                return 'Medal Stats';
+            case 'weapons':
+                return 'Weapon Stats';
+            case 'full':
+                return 'Full Data';
+            default:
+                return 'Data';
+        }
+    }
+
+    // Clean up on window unload
+    window.addEventListener('beforeunload', function () {
+        if (socket) {
+            socket.close();
+        }
+        stopPeriodicUpdates();
+    });
+</script>
+
+</body>
+</html>

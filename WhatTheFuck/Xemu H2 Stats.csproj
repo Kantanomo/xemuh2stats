@@ -121,6 +121,10 @@
   <ItemGroup>
     <Compile Include="classes\configuration.cs" />
     <Compile Include="classes\qmp_communicator.cs" />
+    <Compile Include="classes\websocket\websocket_client.cs" />
+    <Compile Include="classes\websocket\websocket_helpers.cs" />
+    <Compile Include="classes\websocket\websocket_server.cs" />
+    <Compile Include="classes\websocket_communicator.cs" />
     <Compile Include="enums\game_type.cs" />
     <Compile Include="enums\life_cycle.cs" />
     <Compile Include="enums\unit_team.cs" />
