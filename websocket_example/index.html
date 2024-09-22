@@ -108,6 +108,7 @@
         <option value="medals">Medals</option>
         <option value="weapons">Weapons</option>
         <option value="full">Full</option>
+        <option value="location">location</option>
     </select><br>
 </div>
 
@@ -256,7 +257,7 @@
     function startPeriodicUpdates() {
         // Check immediately and then every 5 seconds
         checkLifeCycle();
-        updateInterval = setInterval(checkLifeCycle, 5000);
+        updateInterval = setInterval(checkLifeCycle, 200);
     }
 
     function stopPeriodicUpdates() {

@@ -82,6 +82,11 @@ class websocket_client {
                     this.eventHandlers['get_player'](response);
                 }
                 break;
+            case 'get_player_weapon':
+                if (this.eventHandlers['get_player_weapon']) {
+                    this.eventHandlers['get_player_weapon'](response);
+                }
+                break;
             default:
                 console.warn('Unhandled message type:', messageType);
                 if (this.eventHandlers['unhandled']) {
@@ -122,6 +127,18 @@ class websocket_client {
             message_type: 'get_player',
             arguments: {
                 type: type,
+                player: name
+            }
+        };
+
+        this.send_message(message);
+    }
+
+    request_player_weapon(name)
+    {
+        const message = {
+            message_type: 'get_player_weapon',
+            arguments: {
                 player: name
             }
         };

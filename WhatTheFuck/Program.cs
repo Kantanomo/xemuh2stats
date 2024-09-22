@@ -19,6 +19,8 @@ namespace xemuh2stats
         public static offset_resolver game_state_resolver = new offset_resolver();
         public static offset_resolver exec_resolver = new offset_resolver();
         public static configuration_collection configurations = new configuration_collection();
+        public static QmpProxy qmp;
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -42,6 +44,5 @@ namespace xemuh2stats
             handle.Free();
             return theStructure;
         }
-
     }
 }

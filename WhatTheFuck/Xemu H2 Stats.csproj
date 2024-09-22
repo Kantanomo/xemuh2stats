@@ -125,6 +125,7 @@
     <Compile Include="classes\websocket\websocket_helpers.cs" />
     <Compile Include="classes\websocket\websocket_server.cs" />
     <Compile Include="classes\websocket_communicator.cs" />
+    <Compile Include="enums\damage_reporting_type.cs" />
     <Compile Include="enums\game_type.cs" />
     <Compile Include="enums\life_cycle.cs" />
     <Compile Include="enums\unit_team.cs" />
@@ -136,6 +137,8 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="MemoryHandler.cs" />
+    <Compile Include="objects\cache_file_tags.cs" />
+    <Compile Include="objects\game_state_object.cs" />
     <Compile Include="objects\game_state_player.cs" />
     <Compile Include="objects\game_stats.cs" />
     <Compile Include="objects\medal_stats.cs" />

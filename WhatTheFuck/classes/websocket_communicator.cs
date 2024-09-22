@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using WhatTheFuck.classes.websocket;
+using WhatTheFuck.extensions;
+using WhatTheFuck.objects;
 using xemuh2stats;
 using xemuh2stats.enums;
 using xemuh2stats.objects;
@@ -45,6 +48,49 @@ namespace WhatTheFuck.classes
 
     internal static class websocket_message_handlers
     {
+
+        public static string websocket_message_get_player_weapon(Dictionary<string, string> arguments)
+        {
+            if (!arguments.ContainsKey("player"))
+                return JsonConvert.SerializeObject(new websocket_response_error("get_player", "A player name was not provided for the request"));
+
+            int player_count = Program.memory.ReadInt(Program.game_state_resolver["game_state_players"].address + 0x3C);
+            
+            s_game_state_player player = new s_game_state_player();
+            int player_index = -1;
+
+            for (int i = 0; i < player_count; i++)
+            {
+                real_time_player_stats _player = real_time_player_stats.get(i);
+                if (_player.GetPlayerName() == arguments["player"])
+                {
+                    player_index = i;
+                    break;
+                }
+            }
+            for (int i = 0; i < player_count; i++)
+            {
+                s_game_state_player _player = game_state_player.get(i);
+                if (game_state_player.name(i) == arguments["player"])
+                {
+                    player = _player;
+                    break;
+                }
+            }
+
+            if (player.Equals(new s_game_state_player()))
+                return JsonConvert.SerializeObject(new websocket_response_error("get_player", $"player: {arguments["player"]} could not be found"));
+
+            Dictionary<string, weapon_stat.s_weapon_stat> result = new Dictionary<string, weapon_stat.s_weapon_stat>();
+
+            var weapon = game_state_object.unit_object_get_weapon_type(player.unit_index);
+            var stat = weapon_stat.get_weapon_stats(player_index, weapon_stat.damage_reporting_type_to_results_index(weapon));
+
+            result.Add(weapon.GetDisplayName(), stat);
+
+            return JsonConvert.SerializeObject(new websocket_response<Dictionary<string, weapon_stat.s_weapon_stat>>("get_player_weapon", "", result));
+        }
+
         public static string websocket_message_get_life_cycle(Dictionary<string, string> arguments)
         {
             var cycle = (life_cycle)Program.memory.ReadInt(Program.exec_resolver["life_cycle"].address);
@@ -52,7 +98,7 @@ namespace WhatTheFuck.classes
             result.Add("life_cycle", cycle.ToString());
             return JsonConvert.SerializeObject(new websocket_response<Dictionary<string, string>>("get_life_cycle", "", result));
         }
-
+        
         public static string websocket_message_get_player(Dictionary<string, string> arguments)
         {
             if (!arguments.ContainsKey("type"))
@@ -90,19 +136,35 @@ namespace WhatTheFuck.classes
                     Dictionary<string, s_game_stats> result = new Dictionary<string, s_game_stats>();
                     result.Add(player.GetPlayerName(), player.game_stats);
                     return JsonConvert.SerializeObject(new websocket_response<Dictionary<string, s_game_stats>>("get_player", arguments["type"], result));
-                    }
+                }
                 case "medals":
                 {
                     Dictionary<string, s_medal_stats> result = new Dictionary<string, s_medal_stats>();
                     result.Add(player.GetPlayerName(), player.medal_stats);
                     return JsonConvert.SerializeObject(new websocket_response<Dictionary<string, s_medal_stats>>("get_player", arguments["type"], result));
-                    }
+                }
                 case "weapons":
                 {
                     Dictionary<string, Dictionary<string, weapon_stat.s_weapon_stat>> result = new Dictionary<string, Dictionary<string, weapon_stat.s_weapon_stat>>();
                     result.Add(player.GetPlayerName(), player.weapon_stats);
                     return JsonConvert.SerializeObject(new websocket_response<Dictionary<string, Dictionary<string, weapon_stat.s_weapon_stat>>>("get_player", arguments["type"], result));
+                }
+                case "location":
+                {
+                    for (int i = 0; i < player_count; i++)
+                    {
+                        s_game_state_player _player = game_state_player.get(i);
+                        if (game_state_player.name(i) == arguments["player"])
+                        {
+                            Dictionary<string, Vector3> result = new Dictionary<string, Vector3>();
+                            result.Add(arguments["player"], game_state_object.get_object_position(_player.unit_index));
+                            return JsonConvert.SerializeObject(
+                                new websocket_response<Dictionary<string, Vector3>>("get_player", arguments["type"],
+                                    result));
+                        }
                     }
+                    return JsonConvert.SerializeObject(new websocket_response_error("get_player", "Player position couldn't be found"));
+                }
                 default:
                     return JsonConvert.SerializeObject(new websocket_response_error("get_player", "A invalid type was provided for the request"));
             }
@@ -154,7 +216,7 @@ namespace WhatTheFuck.classes
                     }
 
                     return JsonConvert.SerializeObject(new websocket_response<Dictionary<string, s_player_properties>>("get_players", arguments["type"], players));
-                    }
+                }
 
                 case "medals":
                 {
@@ -167,7 +229,7 @@ namespace WhatTheFuck.classes
                     }
 
                     return JsonConvert.SerializeObject(new websocket_response<Dictionary<string, s_medal_stats>>("get_players", arguments["type"], players));
-                    }
+                }
                 case "weapons":
                 {
                     Dictionary<string, Dictionary<string, weapon_stat.s_weapon_stat>> players = new Dictionary<string, Dictionary<string, weapon_stat.s_weapon_stat>>();
@@ -179,7 +241,17 @@ namespace WhatTheFuck.classes
                     }
 
                     return JsonConvert.SerializeObject(new websocket_response<Dictionary<string, Dictionary<string, weapon_stat.s_weapon_stat>>>("get_players", arguments["type"], players));
+                }
+                case "location":
+                {
+                    Dictionary<string, Vector3> result = new Dictionary<string, Vector3>();
+                    for (int i = 0; i < player_count; i++)
+                    {
+                        s_game_state_player _player = game_state_player.get(i);
+                        result.Add(game_state_player.name(i), game_state_object.get_object_position(_player.unit_index));
                     }
+                    return JsonConvert.SerializeObject(new websocket_response<Dictionary<string, Vector3>>("get_players", arguments["type"], result));
+                }
                 default:
                     return JsonConvert.SerializeObject(new websocket_response_error("get_players", "A invalid type was provided for the request"));
             }
@@ -215,6 +287,9 @@ namespace WhatTheFuck.classes
                         break;
                     case "get_player":
                         _server.SendMessage(client, websocket_message_handlers.websocket_message_get_player(message.arguments));
+                        break;
+                    case "get_player_weapon":
+                        _server.SendMessage(client, websocket_message_handlers.websocket_message_get_player_weapon(message.arguments));
                         break;
                     case "get_life_cycle":
                         _server.SendMessage(client, websocket_message_handlers.websocket_message_get_life_cycle(message.arguments));

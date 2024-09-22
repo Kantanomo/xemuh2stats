@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using WhatTheFuck.enums;
 
 namespace xemuh2stats.objects
 {
@@ -53,7 +54,8 @@ namespace xemuh2stats.objects
             var addr = Program.exec_resolver["weapon_stats"].address + (player_index * 0x36a) + (weapon_index * 0x10);
 
             if (player_index > 4)
-                addr = Program.exec_resolver["game_results_globals_extra"].address + 0xDE + ((player_index - 5) * 0x36A) + (weapon_index * 0x10);
+                addr = Program.exec_resolver["game_results_globals_extra"].address + 0xDE +
+                       ((player_index - 5) * 0x36A) + (weapon_index * 0x10);
 
             return new s_weapon_stat()
             {
@@ -63,7 +65,7 @@ namespace xemuh2stats.objects
                 shots_fired = Program.memory.ReadUShort(addr + 8),
                 shots_hit = Program.memory.ReadUShort(addr + 10),
                 head_shots = Program.memory.ReadUShort(addr + 12)
-            } ;
+            };
             //var data = Program.memory.ReadMemory(false, Program.game_state_resolver["weapon_stats"].address + (player_index * 0x36a) + (weapon_index * 0x10), 0x10);
 
             // return CastBytesTo<s_weapon_stat>(data, 0, 0x10);
@@ -73,5 +75,88 @@ namespace xemuh2stats.objects
         {
             return Program.exec_resolver["weapon_stats"].address + (player_index * 0x36a);
         }
+
+        public static int damage_reporting_type_to_results_index(DamageReportingType type)
+        {
+            switch (type)
+            {
+                case DamageReportingType.MagnumPistol:
+                    return 0;
+                case DamageReportingType.PlasmaPistol:
+                    return 1;
+                case DamageReportingType.Needler:
+                    return 2;
+                case DamageReportingType.SMG:
+                    return 3;
+                case DamageReportingType.PlasmaRifle:
+                    return 4;
+                case DamageReportingType.BattleRifle:
+                    return 5;
+                case DamageReportingType.Carbine:
+                    return 6;
+                case DamageReportingType.Shotgun:
+                    return 7;
+                case DamageReportingType.SniperRifle:
+                    return 8;
+                case DamageReportingType.BeamRifle:
+                    return 9;
+                case DamageReportingType.RocketLauncher:
+                    return 11;
+                case DamageReportingType.FlakCannon:
+                    return 12;
+                case DamageReportingType.BruteShot:
+                    return 13;
+                case DamageReportingType.Disintegrator:
+                    return 14;
+                case DamageReportingType.BrutePlasmaRifle:
+                    return 10;
+                case DamageReportingType.EnergySword:
+                    return 17;
+                case DamageReportingType.FragGrenade:
+                    return 18;
+                case DamageReportingType.PlasmaGrenade:
+                    return 19;
+                case DamageReportingType.FlagMeleeDamage:
+                    return 20;
+                case DamageReportingType.BombMeleeDamage:
+                    return 21;
+                case DamageReportingType.BombExplosionDamage:
+                    return 35;
+                case DamageReportingType.BallMeleeDamage:
+                    return 22;
+                case DamageReportingType.HumanTurret:
+                    return 23;
+                case DamageReportingType.PlasmaTurret:
+                    return 24;
+                case DamageReportingType.Banshee:
+                    return 25;
+                case DamageReportingType.Ghost:
+                    return 26;
+                case DamageReportingType.Mongoose:
+                    return 27;
+                case DamageReportingType.Scorpion:
+                    return 28;
+                case DamageReportingType.SpectreDriver:
+                    return 29;
+                case DamageReportingType.SpectreGunner:
+                    return 30;
+                case DamageReportingType.WarthogDriver:
+                    return 31;
+                case DamageReportingType.WarthogGunner:
+                    return 32;
+                case DamageReportingType.Wraith:
+                    return 33;
+                case DamageReportingType.Tank:
+                    return 34;
+                case DamageReportingType.SentinelBeam:
+                    return 15;
+                case DamageReportingType.SentinelRPG:
+                    return 16;
+                default:
+                    return 0;
+            }
+        }
+
+
     }
 }

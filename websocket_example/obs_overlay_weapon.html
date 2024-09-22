@@ -3,7 +3,7 @@
     <head>
         <script src="websocket_client.js"></script>
         <script src="config.js"></script>
-        <script src="app.js"></script>
+        <script src="app-weapon.js"></script>
         <style>
             body{
                 font-size: 30px;
@@ -21,6 +21,7 @@
             }
             table, th, td {
                 border: none;
+                color: white;
             }
             th {
                 background-color: grey;
@@ -58,13 +59,16 @@
           </style>
     </head>
     <body>
-        <table id="red-team-table">
+        <table id="weapon-table">
             <thead>
               <tr>
-                <th>Player</th>
+                <th>weapon</th>
                 <th>K</th>
-                <th>A</th>
                 <th>D</th>
+                <th>S</th>
+                <th>SH</th>
+                <th>SF</th>
+                <th>H</th>
               </tr>
             </thead>
             <tbody>
@@ -72,57 +76,6 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-            </tbody>
-        </table>
-        <table id="blue-team-table">
-            <thead>
-              <tr>
-                <th>K</th>
-                <th>A</th>
-                <th>D</th>
-                <th>Player</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
                 <td></td>
                 <td></td>
                 <td></td>
