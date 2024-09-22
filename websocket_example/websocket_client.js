@@ -87,6 +87,11 @@ class websocket_client {
                     this.eventHandlers['get_player_weapon'](response);
                 }
                 break;
+            case 'get_netgame_items':
+                if (this.eventHandlers['get_netgame_items']) {
+                    this.eventHandlers['get_netgame_items'](response);
+                }
+                break;
             default:
                 console.warn('Unhandled message type:', messageType);
                 if (this.eventHandlers['unhandled']) {
@@ -141,6 +146,16 @@ class websocket_client {
             arguments: {
                 player: name
             }
+        };
+
+        this.send_message(message);
+    }
+
+    request_netgame_items()
+    {
+        const message = {
+            message_type: 'get_netgame_items',
+            arguments: {}
         };
 
         this.send_message(message);

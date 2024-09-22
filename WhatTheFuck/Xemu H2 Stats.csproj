@@ -142,6 +142,7 @@
     <Compile Include="objects\game_state_player.cs" />
     <Compile Include="objects\game_stats.cs" />
     <Compile Include="objects\medal_stats.cs" />
+    <Compile Include="objects\net_game_equipment.cs" />
     <Compile Include="objects\obs_communicator.cs" />
     <Compile Include="objects\offset_resolver.cs" />
     <Compile Include="objects\post_game_report.cs" />

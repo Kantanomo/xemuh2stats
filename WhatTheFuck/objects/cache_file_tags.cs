@@ -14,6 +14,7 @@ namespace WhatTheFuck.objects
         private static uint tag_instance_qemu_address = 0; 
         private static long tag_instance_address;
         private static uint tag_instance_count;
+        private static long scenario_tag_address = 0;
 
         private static void check_tag_instance_addr()
         {
@@ -25,12 +26,14 @@ namespace WhatTheFuck.objects
                 tag_instance_address = (long)Program.qmp.Translate(tag_instance_qemu_address);
                 tag_instance_count =
                     Program.memory.ReadUInt(Program.game_state_resolver["game_state_tags"].address + 24);
+                scenario_tag_address = 0;
             }
         }
 
         public static void clear_cache()
         { 
             tag_cache.Clear();
+            scenario_tag_address = 0;
         }
 
 
@@ -48,6 +51,27 @@ namespace WhatTheFuck.objects
             tag_cache.Add(tag_index, r_offset);
 
             return r_offset;
+        }
+
+        public static long get_scenario_address()
+        {
+            check_tag_instance_addr();
+
+            if(scenario_tag_address != 0) return scenario_tag_address;
+
+            for (var i = 0; i < tag_instance_count; i++)
+            {
+                var addr = tag_instance_address + (16 * i);
+                var group = Program.memory.ReadStringAscii(addr, 4);
+                if (group == "rncs")
+                {
+                    addr = tag_instance_address + (16 * i) + 8;
+                    var offset = (long) Program.qmp.Translate(Program.memory.ReadUInt(addr));
+                    return offset;
+                }
+            }
+            
+            return -1;
         }
     }
 }

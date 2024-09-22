@@ -154,6 +154,7 @@ namespace xemuh2stats
                     {
                         game_state_object.clear_cache();
                         cache_file_tags.clear_cache();
+                        net_game_equipment.clear_cache();
 
                         string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
                         List<s_post_game_player> post_game_ = new List<s_post_game_player>();
@@ -392,26 +393,32 @@ namespace xemuh2stats
 
         private void render_debug_tab()
         {
-            int test_player_count =
-                Program.memory.ReadInt(Program.game_state_resolver["game_state_players"].address + 0x3C);
-            for (int i = 0; i < test_player_count; i++)
-            {
-                var player = real_time_player_stats.get(i);
-                var g_player = game_state_player.get(i);
-                var g_player_object = game_state_player.get_player_object(i);
 
-                var weapon = game_state_object.unit_object_get_weapon_type(game_state_player.get_player_unit_index(i));
-                var stat = weapon_stat.get_weapon_stats(i, weapon_stat.damage_reporting_type_to_results_index(weapon));
-                //var biped_datum = Program.memory.ReadUInt((long)g_player_object);
-                //var biped_tag = cache_file_tags.get_tag_address(biped_datum);
+            //0xE1780003 beaver creek scenario datum
 
-                debug_table.Rows[i].Cells[0].Value = stat.shots_fired;
+            var a = cache_file_tags.get_tag_address(0xE1780003);
+            var b = a;
 
-                debug_table.Rows[i].Cells[1].Value = weapon.ToString();
-                debug_table.Rows[i].Cells[2].Value = player.game_addr.ToString("X");
-                debug_table.Rows[i].Cells[3].Value = player.medal_addr.ToString("X");
-                debug_table.Rows[i].Cells[4].Value = player.weapon_addr.ToString("X");
-            }
+            //int test_player_count =
+            //    Program.memory.ReadInt(Program.game_state_resolver["game_state_players"].address + 0x3C);
+            //for (int i = 0; i < test_player_count; i++)
+            //{
+            //    var player = real_time_player_stats.get(i);
+            //    var g_player = game_state_player.get(i);
+            //    var g_player_object = game_state_player.get_player_object(i);
+
+            //    var weapon = game_state_object.unit_object_get_weapon_type(game_state_player.get_player_unit_index(i));
+            //    var stat = weapon_stat.get_weapon_stats(i, weapon_stat.damage_reporting_type_to_results_index(weapon));
+            //    //var biped_datum = Program.memory.ReadUInt((long)g_player_object);
+            //    //var biped_tag = cache_file_tags.get_tag_address(biped_datum);
+
+            //    debug_table.Rows[i].Cells[0].Value = stat.shots_fired;
+
+            //    debug_table.Rows[i].Cells[1].Value = weapon.ToString();
+            //    debug_table.Rows[i].Cells[2].Value = player.game_addr.ToString("X");
+            //    debug_table.Rows[i].Cells[3].Value = player.medal_addr.ToString("X");
+            //    debug_table.Rows[i].Cells[4].Value = player.weapon_addr.ToString("X");
+            //}
         }
 
         private void xemu_browse_button_Click(object sender, EventArgs e)
@@ -462,6 +469,7 @@ namespace xemuh2stats
             Program.exec_resolver.Add(new offset_resolver_item("session_players", 0x35AD344, ""));
             Program.exec_resolver.Add(new offset_resolver_item("variant_info", 0x35AD0EC, ""));
             Program.exec_resolver.Add(new offset_resolver_item("profile_enabled", 0x3569128, ""));
+            Program.exec_resolver.Add(new offset_resolver_item("game_engine_globals", 0x35A53B8, ""));
             Program.exec_resolver.Add(new offset_resolver_item("players", 0x35A44F4, ""));
             Program.exec_resolver.Add(new offset_resolver_item("objects", 0x35BBBD0, ""));
             Program.exec_resolver.Add(new offset_resolver_item("game_results_globals", 0x35ACFB0, ""));
@@ -474,6 +482,7 @@ namespace xemuh2stats
             Program.game_state_resolver.Add(new offset_resolver_item("game_state_objects", 0, "object"));
             Program.game_state_resolver.Add(new offset_resolver_item("game_state_tags", 0, "sgat"));
             Program.game_state_resolver.Add(new offset_resolver_item("game_ending", 0, ""));
+            Program.game_state_resolver.Add(new offset_resolver_item("game_engine", 0, ""));
 
             // xemu base_address + xbe base_address
             var host_base_executable_address = (long) Program.qmp.Translate(0x80000000) + 0x5C000;
@@ -485,7 +494,7 @@ namespace xemuh2stats
 
             var game_state_players_addr = Program.qmp.Translate(Program.memory.ReadUInt(Program.exec_resolver["players"].address));
             var game_state_objects_addr = Program.qmp.Translate(Program.memory.ReadUInt(Program.exec_resolver["objects"].address));
-
+            var game_engine_addr = Program.qmp.Translate(Program.memory.ReadUInt(Program.exec_resolver["game_engine_globals"].address));
             var game_state_offset = Program.memory.ReadUInt(Program.exec_resolver["tags"].address);
 
             while (game_state_offset == 0)
@@ -498,6 +507,7 @@ namespace xemuh2stats
             Program.game_state_resolver["game_state_players"].address = (long) game_state_players_addr;
             Program.game_state_resolver["game_state_objects"].address = (long) game_state_objects_addr;
             Program.game_state_resolver["game_state_tags"].address = (long) game_state_tags_addr;
+            Program.game_state_resolver["game_engine"].address = (long) game_engine_addr;
             Program.game_state_resolver["game_ending"].address = (long)game_state_players_addr - 0x1E8;
 
             main_tab_control.TabPages.Add(players_tab_page);

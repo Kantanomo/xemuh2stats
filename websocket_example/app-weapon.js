@@ -30,11 +30,16 @@ client.add_message_recieved_callback('get_player_weapon', (response) => {
     table_cells[6].textContent = weapon.head_shots;
 });
 
+client.add_message_recieved_callback('get_netgame_items', (response) => {
+    console.log(response);
+});
+
 function update()
 {
     if(current_life_cycle == 'in_game')
     {
         client.request_player_weapon("kant");
+        client.request_netgame_items();
     }
     client.request_life_cycle();
 }
