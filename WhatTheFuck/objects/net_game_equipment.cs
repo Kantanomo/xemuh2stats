@@ -38,6 +38,7 @@ namespace WhatTheFuck.objects
         public string type;
         public netgame_equipment_classification classification;
         public long candy_monitor_address;
+        public int respawn_time;
 
         public bool is_respawning => Program.memory.ReadUInt(candy_monitor_address) == uint.MaxValue;
         public uint respawn_timer => Program.memory.ReadUInt(candy_monitor_address + 4);
@@ -86,8 +87,8 @@ namespace WhatTheFuck.objects
                         var store = new net_game_equipment_storage();
                         store.classification = (netgame_equipment_classification)Program.memory.ReadByte(netgame_item_addr + 0x14);
                         store.tag_index = Program.memory.ReadUInt(netgame_item_addr + 0x5C);
-                        store.candy_monitor_address =
-                            Program.game_state_resolver["game_engine"].address + 2012 + (8 * i);
+                        store.respawn_time = Program.memory.ReadInt(netgame_item_addr + 0x10);
+                        store.candy_monitor_address = Program.game_state_resolver["game_engine"].address + 2012 + (8 * i);
 
                         switch (store.classification)
                         {
@@ -194,7 +195,7 @@ namespace WhatTheFuck.objects
                 list.Add(item.Value);
             }
 
-            t = equipment_cache.Where(x => x.Value.type == "Sniper Rifle" || x.Value.type == "Rocket Launcher");
+            t = equipment_cache.Where(x => x.Value.type == "Sniper Rifle" || x.Value.type == "Rocket Launcher" || x.Value.type == "Energy Sword");
             foreach (var item in t)
             {
                 list.Add(item.Value);
