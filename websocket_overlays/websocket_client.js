@@ -92,6 +92,11 @@ class websocket_client {
                     this.eventHandlers['get_netgame_items'](response);
                 }
                 break;
+                case 'get_variant_details':
+                    if (this.eventHandlers['get_variant_details']) {
+                        this.eventHandlers['get_variant_details'](response);
+                    }
+                    break;
             default:
                 console.warn('Unhandled message type:', messageType);
                 if (this.eventHandlers['unhandled']) {
@@ -155,6 +160,16 @@ class websocket_client {
     {
         const message = {
             message_type: 'get_netgame_items',
+            arguments: {}
+        };
+
+        this.send_message(message);
+    }
+
+    request_variant_details()
+    {
+        const message = { 
+            message_type: 'get_variant_details',
             arguments: {}
         };
 

@@ -48,6 +48,12 @@ namespace WhatTheFuck.classes
 
     internal static class websocket_message_handlers
     {
+        public static string websocket_message_get_variant_details(Dictionary<string, string> arguments)
+        {
+            return JsonConvert.SerializeObject(
+                new websocket_response<s_variant_details>("get_variant_details", "", Program.variant_details_cache));
+        }
+
         public static string websocket_message_get_netgame_items(Dictionary<string, string> arguments)
         {
             var result = net_game_equipment.get_useful_net_game_items();
@@ -300,6 +306,9 @@ namespace WhatTheFuck.classes
                         break;
                     case "get_netgame_items":
                         _server.SendMessage(client, websocket_message_handlers.websocket_message_get_netgame_items(message.arguments));
+                        break;
+                    case "get_variant_details":
+                        _server.SendMessage(client, websocket_message_handlers.websocket_message_get_variant_details(message.arguments));
                         break;
                 }
             }

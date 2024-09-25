@@ -20,6 +20,7 @@ namespace xemuh2stats
         public static offset_resolver exec_resolver = new offset_resolver();
         public static configuration_collection configurations = new configuration_collection();
         public static QmpProxy qmp;
+        public static s_variant_details variant_details_cache;
 
         /// <summary>
         /// The main entry point for the application.

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using WhatTheFuck.extensions;
 using xemuh2stats.enums;
 
 namespace xemuh2stats.objects
@@ -27,9 +28,9 @@ namespace xemuh2stats.objects
         public string scenario;
         public DateTime start_time;
         public DateTime end_time;
-        public TimeSpan duration => 
-            (end_time - start_time);
-
+        public TimeSpan duration => ((end_time == DateTime.MinValue) ? DateTime.Now - start_time :  end_time - start_time);
+        public string game_type_name => game_type.GetDisplayName();
+        
         public string map_name
         {
             get

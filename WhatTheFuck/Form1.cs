@@ -39,7 +39,7 @@ namespace xemuh2stats
 
         public static bool time_lock = false;
         public static DateTime StartTime;
-        public static s_variant_details variant_details_cache;
+        
 
         public static Process xemu_proccess;
 
@@ -99,9 +99,7 @@ namespace xemuh2stats
                 {
                     if (!real_time_lock)
                     {
-                        variant_details_cache = variant_details.get();
-                        variant_details_cache.start_time = StartTime;
-                        variant_details_cache.end_time = DateTime.Now;
+                        Program.variant_details_cache.end_time = DateTime.Now;
 
                         int player_count =
                             Program.memory.ReadInt(Program.game_state_resolver["game_state_players"].address + 0x3C);
@@ -137,9 +135,10 @@ namespace xemuh2stats
                     variant_status_label.Text = $@"Variant: {variant.name} |";
                     game_type_status_label.Text = $@"Game Type: {variant.game_type.ToString()} |";
                     map_status_label.Text = $@"Map: {variant.map_name} |";
-                    if (!time_lock)
+                    if (!time_lock && !string.IsNullOrEmpty(variant.name))
                     {
-                        StartTime = DateTime.Now;
+                        Program.variant_details_cache = variant_details.get();
+                        Program.variant_details_cache.start_time = DateTime.Now;
                         time_lock = true;
                     }
                 }
@@ -164,8 +163,7 @@ namespace xemuh2stats
                             post_game_.Add(post_game_report.get(i));
                         }
 
-                        xls_generator.dump_game_to_sheet($"{timestamp}", real_time_cache, post_game_,
-                            variant_details_cache);
+                        xls_generator.dump_game_to_sheet($"{timestamp}", real_time_cache, post_game_, Program.variant_details_cache);
                         dump_lock = true;
                     }
                 }
@@ -351,7 +349,7 @@ namespace xemuh2stats
                         }
                     }
                         break;
-                    case game_type.juggeraut:
+                    case game_type.juggernaut:
                         players_table.Rows[i].Cells[2].Value = player.game_stats.kills_as_juggernaut;
                         break;
                     case game_type.territories:
