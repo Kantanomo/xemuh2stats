@@ -262,6 +262,44 @@ namespace WhatTheFuck.classes
                     }
                     return JsonConvert.SerializeObject(new websocket_response<Dictionary<string, Vector3>>("get_players", arguments["type"], result));
                 }
+                case "scoreboard":
+                {
+                    // key: player_name, value: (key: property_name value: property_value)
+                    Dictionary<string, Dictionary<string, string>> result =
+                        new Dictionary<string, Dictionary<string, string>>();
+                    for (int i = 0; i < player_count; i++)
+                    {
+                        real_time_player_stats real_player = real_time_player_stats.get(i);
+
+                        for (int j = 0; j < player_count; j++)
+                        {
+                            s_game_state_player state_player = game_state_player.get(i);
+                            if (real_player.GetPlayerName() == state_player.GetPlayerName())
+                            {
+                                Dictionary<string, string> player_properties = new Dictionary<string, string>();
+                                player_properties.Add("kills", real_player.game_stats.kills.ToString());
+                                player_properties.Add("deaths", real_player.game_stats.deaths.ToString());
+                                player_properties.Add("assists", real_player.game_stats.assists.ToString());
+                                player_properties.Add("is_dead", (state_player.respawn_time == 0) ? "False" : "True");
+                                player_properties.Add("respawn_timer", (state_player.respawn_time == 0) ? "0" : state_player.field_160.ToString());
+                                if (state_player.unit_index != uint.MaxValue)
+                                {
+                                    player_properties.Add("current_weapon",
+                                        game_state_object.unit_object_get_weapon_type(state_player.unit_index)
+                                            .GetDisplayName());
+                                }
+                                else
+                                {
+                                    player_properties.Add("current_weapon", "None");
+                                }
+                                result.Add(real_player.GetPlayerName(), player_properties);
+                                break;
+                            }
+                        }
+                    }
+
+                    return JsonConvert.SerializeObject(new websocket_response<Dictionary<string, Dictionary<string, string>>>("get_players", arguments["type"], result));
+                }
                 default:
                     return JsonConvert.SerializeObject(new websocket_response_error("get_players", "A invalid type was provided for the request"));
             }

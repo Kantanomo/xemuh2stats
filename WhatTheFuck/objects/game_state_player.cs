@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using WhatTheFuck.objects;
 
 namespace xemuh2stats.objects
@@ -30,6 +31,7 @@ namespace xemuh2stats.objects
         public int InputFlags2;
         public fixed byte field_3C[4];
         public s_player_properties properties_1;
+        public fixed byte pad_1[12];
         public s_player_properties properties_2;
         public int field_148;
         public int respawn_penalty;
@@ -60,6 +62,14 @@ namespace xemuh2stats.objects
         public short random_index;
         public fixed byte gap_1FE[2];
         public int is_chatting;
+
+        public unsafe string GetPlayerName()
+        {
+            fixed (char* namePtr = this.properties_1.player_name)
+            {
+                return new string(namePtr);
+            }
+        }
     }
 
     public static class game_state_player
