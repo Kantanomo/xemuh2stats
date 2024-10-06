@@ -276,7 +276,20 @@ namespace WhatTheFuck.classes
                             s_game_state_player state_player = game_state_player.get(i);
                             if (real_player.GetPlayerName() == state_player.GetPlayerName())
                             {
+                                int emblem_foreground = (int)real_player.player.profile_traits.profile.emblem_info.foreground_emblem;
+                                int emblem_background = (int)real_player.player.profile_traits.profile.emblem_info.background_emblem;
+                                int primary_color = (int)real_player.player.profile_traits.profile.primary_color;
+                                int secondary_color = (int)real_player.player.profile_traits.profile.secondary_color;
+                                int tertiary_color = (int)real_player.player.profile_traits.profile.tertiary_color;
+                                int quaternary_color = (int)real_player.player.profile_traits.profile.quaternary_color;
                                 Dictionary<string, string> player_properties = new Dictionary<string, string>();
+                                player_properties.Add("team", real_player.player.team_index.ToString());
+                                player_properties.Add("emblem_foreground", emblem_foreground.ToString());
+                                player_properties.Add("emblem_background", emblem_background.ToString());
+                                player_properties.Add("primary_color", primary_color.ToString());
+                                player_properties.Add("secondary_color", secondary_color.ToString());
+                                player_properties.Add("tertiary_color", tertiary_color.ToString());
+                                player_properties.Add("quaternary_color", quaternary_color.ToString());
                                 player_properties.Add("kills", real_player.game_stats.kills.ToString());
                                 player_properties.Add("deaths", real_player.game_stats.deaths.ToString());
                                 player_properties.Add("assists", real_player.game_stats.assists.ToString());
