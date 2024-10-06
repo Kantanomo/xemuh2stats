@@ -140,6 +140,7 @@
     </Compile>
     <Compile Include="MemoryHandler.cs" />
     <Compile Include="objects\cache_file_tags.cs" />
+    <Compile Include="objects\game_event_monitor.cs" />
     <Compile Include="objects\game_state_object.cs" />
     <Compile Include="objects\game_state_player.cs" />
     <Compile Include="objects\game_stats.cs" />

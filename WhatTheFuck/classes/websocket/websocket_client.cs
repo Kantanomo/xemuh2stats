@@ -27,6 +27,8 @@ namespace WhatTheFuck.classes.websocket
         /// <summary>If the server has sent a ping to the client and is waiting for a pong</summary>
         private bool _bIsWaitingForPong;
 
+        private Dictionary<string, bool> feature_set = new Dictionary<string, bool>();
+
         #endregion
 
         #region Class Events
@@ -130,6 +132,22 @@ namespace WhatTheFuck.classes.websocket
             }
         }
 
+        public bool this[string feature]
+        {
+            get
+            {
+                if (feature_set.ContainsKey(feature))
+                    return feature_set[feature];
+                return false;
+            }
+            set
+            {
+                if (feature_set.ContainsKey(feature))
+                    feature_set[feature] = value;
+                else
+                    feature_set.Add(feature, value);
+            }
+        }
         #endregion
 
     }

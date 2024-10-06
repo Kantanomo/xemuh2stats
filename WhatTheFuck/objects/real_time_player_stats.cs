@@ -262,7 +262,7 @@ namespace xemuh2stats.objects
             //    Program.memory.ReadStringUnicode(Program.exec_resolver["session_players"].address + player_index * 0xA4,
             //        16);
             
-            result.player = Program.CastBytesTo<s_player_properties>(Program.memory.ReadMemory(false, Program.exec_resolver["session_players"].address + player_index * 0xA4, 132), 0, 132);
+            result.player = Program.memory.ReadStruct<s_player_properties>(Program.exec_resolver["session_players"].address + player_index * 0xA4);
             //result.name = game_state_player.name(player_index);
             Dictionary<string, weapon_stat.s_weapon_stat> t_stats = new Dictionary<string, weapon_stat.s_weapon_stat>();
             
@@ -280,6 +280,10 @@ namespace xemuh2stats.objects
 
             return result;
         }
+
+        public static string GetPlayerNameExplicit(int player_index) => 
+            Program.memory.ReadStringUnicode(Program.exec_resolver["session_players"].address + player_index * 0xA4, 16);
+
         public unsafe string GetPlayerName()
         {
             fixed (char* namePtr = this.player.player_name)

@@ -44,7 +44,7 @@ namespace xemuh2stats.objects
             if (player_index > 4)
                 addr = Program.exec_resolver["game_results_globals_extra"].address + 0x4C + ((player_index - 5) * 0x36A);
 
-            return Program.CastBytesTo<s_medal_stats>(Program.memory.ReadMemory(false, addr, 48), 0, 48);
+            return Program.memory.ReadStruct<s_medal_stats>(addr);
         }
 
         public static long get_addr(int player_index)

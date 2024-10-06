@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -324,6 +325,26 @@ namespace xemuh2stats
             return matchAddresses;
         }
 
-        #endregion  
+        #endregion
+
+        public T ReadStruct<T>(long pOffset, bool addToBase = false)
+        {
+            //// Pin the managed memory while, copy it out the data, then unpin it
+            //GCHandle handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+            //T theStructure = (T)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(T));
+            //handle.Free();
+            //return theStructure;
+            int size = Marshal.SizeOf<T>();
+            byte[] buffer = ReadMemory(addToBase, pOffset, size);
+            GCHandle handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+            try
+            {
+                return Marshal.PtrToStructure<T>(handle.AddrOfPinnedObject());
+            }
+            finally
+            {
+                handle.Free();
+            }
+        }
     }
 }

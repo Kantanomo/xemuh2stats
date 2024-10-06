@@ -83,7 +83,7 @@ namespace xemuh2stats.objects
         public static s_game_state_player get(int index)
         {
             var addr = (Program.game_state_resolver["game_state_players"].address + 0x4C) + index * 540;
-            return Program.CastBytesTo<s_game_state_player>(Program.memory.ReadMemory(false, addr, 540), 0, 540);
+            return Program.memory.ReadStruct<s_game_state_player>(addr);
         }
 
         public static uint get_player_unit_index(int index)

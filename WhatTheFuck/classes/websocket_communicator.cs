@@ -48,6 +48,11 @@ namespace WhatTheFuck.classes
 
     internal static class websocket_message_handlers
     {
+        public static string websocket_message_send_event(string game_event)
+        {
+            return JsonConvert.SerializeObject(new websocket_response<string>("game_event_push", "", game_event));
+        }
+
         public static string websocket_message_get_variant_details(Dictionary<string, string> arguments)
         {
             return JsonConvert.SerializeObject(
@@ -361,6 +366,9 @@ namespace WhatTheFuck.classes
                     case "get_variant_details":
                         _server.SendMessage(client, websocket_message_handlers.websocket_message_get_variant_details(message.arguments));
                         break;
+                    case "feature_enable":
+                        client[message.arguments["feature"]] = true;
+                        break;
                 }
             }
         }
@@ -372,6 +380,15 @@ namespace WhatTheFuck.classes
             _server.OnClientConnected += _server_OnClientConnected;
             _server.OnClientDisconnected += _server_OnClientDisconnected;
             _server.OnSendMessage += _server_OnSendMessage;
+            game_event_monitor.add_event_callbaack(_server_on_game_event_update);
+        }
+
+        public static void _server_on_game_event_update(string game_event)
+        {
+            foreach (var websocketClient in _server._clients.Where(websocketClient => websocketClient["events_push"]))
+            {
+                _server.SendMessage(websocketClient, websocket_message_handlers.websocket_message_send_event(game_event));
+            }
         }
 
         private static void _server_OnSendMessage(object sender, OnSendMessageHandler e)

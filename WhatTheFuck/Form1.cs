@@ -76,6 +76,8 @@ namespace xemuh2stats
             main_tab_control.TabPages.RemoveAt(1);
 
             weapon_player_select.Tag = 0;
+
+            game_event_monitor.add_event_callbaack(add_event_text);
         }
 
         private void main_timer_Tick(object sender, EventArgs e)
@@ -135,6 +137,7 @@ namespace xemuh2stats
                     variant_status_label.Text = $@"Variant: {variant.name} |";
                     game_type_status_label.Text = $@"Game Type: {variant.game_type.ToString()} |";
                     map_status_label.Text = $@"Map: {variant.map_name} |";
+                    game_event_monitor.read_events();
                     if (!time_lock && !string.IsNullOrEmpty(variant.name))
                     {
                         Program.variant_details_cache = variant_details.get();
@@ -154,6 +157,7 @@ namespace xemuh2stats
                         game_state_object.clear_cache();
                         cache_file_tags.clear_cache();
                         net_game_equipment.clear_cache();
+                        game_event_monitor.reset();
 
                         string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
                         List<s_post_game_player> post_game_ = new List<s_post_game_player>();
@@ -187,6 +191,11 @@ namespace xemuh2stats
                     case "debug":
                     {
                         render_debug_tab();
+                        break;
+                    }
+                    case "game events":
+                    {
+                        render_game_events_tab();
                         break;
                     }
                 }
@@ -255,6 +264,31 @@ namespace xemuh2stats
             }
         }
 
+        private void add_event_text(string event_record)
+        {
+            game_events_text_box.Text += event_record + "\n";
+            game_events_text_box.ScrollToCaret();
+        }
+
+        private uint last_event = 0;
+        private void render_game_events_tab()
+        {
+            //uint out_index = 0;
+            //var events = game_event_monitor.get_new_events(last_event, out out_index);
+
+            //if (events.Any())
+            //{
+            //    foreach (var game_event in events)
+            //    {
+            //        game_events_text_box.Text += game_event_monitor.format_event(game_event) + "\n";
+            //    }
+
+            //    last_event = out_index;
+            //}
+            //game_events_text_box.SelectionStart = game_events_text_box.Text.Length;
+            // scroll it automatically
+            //game_events_text_box.ScrollToCaret();
+        }
 
         private void render_weapon_stat_tab()
         {

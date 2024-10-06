@@ -140,7 +140,7 @@ namespace WhatTheFuck.classes.websocket
         private IPEndPoint _endPoint;
 
         /// <summary>The connected clients to the server </summary>
-        private List<websocket_client> _clients = new List<websocket_client>();
+        public List<websocket_client> _clients = new List<websocket_client>();
 
         #endregion
 

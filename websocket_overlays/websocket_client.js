@@ -92,11 +92,16 @@ class websocket_client {
                     this.eventHandlers['get_netgame_items'](response);
                 }
                 break;
-                case 'get_variant_details':
-                    if (this.eventHandlers['get_variant_details']) {
-                        this.eventHandlers['get_variant_details'](response);
-                    }
-                    break;
+            case 'get_variant_details':
+                if (this.eventHandlers['get_variant_details']) {
+                    this.eventHandlers['get_variant_details'](response);
+                }
+                break;
+            case 'game_event_push':
+                if(this.eventHandlers['game_event_push']){
+                    this.eventHandlers['game_event_push'](response);
+                }
+                break;
             default:
                 console.warn('Unhandled message type:', messageType);
                 if (this.eventHandlers['unhandled']) {
@@ -171,6 +176,18 @@ class websocket_client {
         const message = { 
             message_type: 'get_variant_details',
             arguments: {}
+        };
+
+        this.send_message(message);
+    }
+
+    request_feature_enable(feature_)
+    {
+        const message = {
+            message_type: 'feature_enable',
+            arguments: {
+                feature: feature_
+            }
         };
 
         this.send_message(message);

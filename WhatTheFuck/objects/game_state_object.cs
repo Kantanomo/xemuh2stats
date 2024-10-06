@@ -43,7 +43,7 @@ namespace WhatTheFuck.objects
                 return Vector3.Zero;
 
             Vector3 result =
-                Program.CastBytesTo<Vector3>(Program.memory.ReadMemory(false, unit_addr + 0x30, 12), 0, 12);
+                Program.memory.ReadStruct<Vector3>(unit_addr + 0x30);
 
             return result;
 

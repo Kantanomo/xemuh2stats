@@ -108,6 +108,8 @@
             this.variant_status_label = new System.Windows.Forms.ToolStripStatusLabel();
             this.game_type_status_label = new System.Windows.Forms.ToolStripStatusLabel();
             this.map_status_label = new System.Windows.Forms.ToolStripStatusLabel();
+            this.events_tab_page = new System.Windows.Forms.TabPage();
+            this.game_events_text_box = new System.Windows.Forms.RichTextBox();
             this.main_tab_control.SuspendLayout();
             this.setup_tab_page.SuspendLayout();
             this.settings_group_box.SuspendLayout();
@@ -123,6 +125,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.obs_scene_link_table)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.events_tab_page.SuspendLayout();
             this.SuspendLayout();
             // 
             // main_tab_control
@@ -132,6 +135,7 @@
             this.main_tab_control.Controls.Add(this.weapon_stats_tab);
             this.main_tab_control.Controls.Add(this.debug_tab);
             this.main_tab_control.Controls.Add(this.obs_tab_page);
+            this.main_tab_control.Controls.Add(this.events_tab_page);
             this.main_tab_control.Location = new System.Drawing.Point(12, 12);
             this.main_tab_control.Name = "main_tab_control";
             this.main_tab_control.SelectedIndex = 0;
@@ -872,6 +876,26 @@
             this.map_status_label.Size = new System.Drawing.Size(34, 17);
             this.map_status_label.Text = "Map:";
             // 
+            // events_tab_page
+            // 
+            this.events_tab_page.Controls.Add(this.game_events_text_box);
+            this.events_tab_page.Location = new System.Drawing.Point(4, 22);
+            this.events_tab_page.Name = "events_tab_page";
+            this.events_tab_page.Padding = new System.Windows.Forms.Padding(3);
+            this.events_tab_page.Size = new System.Drawing.Size(768, 624);
+            this.events_tab_page.TabIndex = 5;
+            this.events_tab_page.Text = "game events";
+            this.events_tab_page.UseVisualStyleBackColor = true;
+            // 
+            // game_events_text_box
+            // 
+            this.game_events_text_box.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.game_events_text_box.Location = new System.Drawing.Point(3, 3);
+            this.game_events_text_box.Name = "game_events_text_box";
+            this.game_events_text_box.Size = new System.Drawing.Size(762, 618);
+            this.game_events_text_box.TabIndex = 0;
+            this.game_events_text_box.Text = "";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -904,6 +928,7 @@
             this.groupBox2.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.events_tab_page.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -989,6 +1014,8 @@
         private System.Windows.Forms.TextBox websocket_bind_text_box;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.LinkLabel websocket_bind_link_label;
+        private System.Windows.Forms.TabPage events_tab_page;
+        private System.Windows.Forms.RichTextBox game_events_text_box;
     }
 }
 
