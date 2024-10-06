@@ -48,6 +48,12 @@ namespace WhatTheFuck.classes
 
     internal static class websocket_message_handlers
     {
+        public static string websocket_message_get_variant_details(Dictionary<string, string> arguments)
+        {
+            return JsonConvert.SerializeObject(
+                new websocket_response<s_variant_details>("get_variant_details", "", Program.variant_details_cache));
+        }
+
         public static string websocket_message_get_netgame_items(Dictionary<string, string> arguments)
         {
             var result = net_game_equipment.get_useful_net_game_items();
@@ -256,6 +262,57 @@ namespace WhatTheFuck.classes
                     }
                     return JsonConvert.SerializeObject(new websocket_response<Dictionary<string, Vector3>>("get_players", arguments["type"], result));
                 }
+                case "scoreboard":
+                {
+                    // key: player_name, value: (key: property_name value: property_value)
+                    Dictionary<string, Dictionary<string, string>> result =
+                        new Dictionary<string, Dictionary<string, string>>();
+                    for (int i = 0; i < player_count; i++)
+                    {
+                        real_time_player_stats real_player = real_time_player_stats.get(i);
+
+                        for (int j = 0; j < player_count; j++)
+                        {
+                            s_game_state_player state_player = game_state_player.get(i);
+                            if (real_player.GetPlayerName() == state_player.GetPlayerName())
+                            {
+                                int emblem_foreground = (int)real_player.player.profile_traits.profile.emblem_info.foreground_emblem;
+                                int emblem_background = (int)real_player.player.profile_traits.profile.emblem_info.background_emblem;
+                                int primary_color = (int)real_player.player.profile_traits.profile.primary_color;
+                                int secondary_color = (int)real_player.player.profile_traits.profile.secondary_color;
+                                int tertiary_color = (int)real_player.player.profile_traits.profile.tertiary_color;
+                                int quaternary_color = (int)real_player.player.profile_traits.profile.quaternary_color;
+                                Dictionary<string, string> player_properties = new Dictionary<string, string>();
+                                player_properties.Add("team", real_player.player.team_index.ToString());
+                                player_properties.Add("emblem_foreground", emblem_foreground.ToString());
+                                player_properties.Add("emblem_background", emblem_background.ToString());
+                                player_properties.Add("primary_color", primary_color.ToString());
+                                player_properties.Add("secondary_color", secondary_color.ToString());
+                                player_properties.Add("tertiary_color", tertiary_color.ToString());
+                                player_properties.Add("quaternary_color", quaternary_color.ToString());
+                                player_properties.Add("kills", real_player.game_stats.kills.ToString());
+                                player_properties.Add("deaths", real_player.game_stats.deaths.ToString());
+                                player_properties.Add("assists", real_player.game_stats.assists.ToString());
+                                player_properties.Add("is_dead", (state_player.respawn_time == 0) ? "False" : "True");
+                                player_properties.Add("respawn_timer", (state_player.respawn_time == 0) ? "0" : state_player.field_160.ToString());
+                                if (state_player.unit_index != uint.MaxValue)
+                                {
+                                    player_properties.Add("current_weapon",
+                                        game_state_object.unit_object_get_weapon_type(state_player.unit_index)
+                                            .GetDisplayName());
+                                }
+                                else
+                                {
+                                    player_properties.Add("current_weapon", "None");
+                                }
+                                result.Add(real_player.GetPlayerName(), player_properties);
+                                break;
+                            }
+                        }
+                    }
+
+                    return JsonConvert.SerializeObject(new websocket_response<Dictionary<string, Dictionary<string, string>>>("get_players", arguments["type"], result));
+                }
                 default:
                     return JsonConvert.SerializeObject(new websocket_response_error("get_players", "A invalid type was provided for the request"));
             }
@@ -300,6 +357,9 @@ namespace WhatTheFuck.classes
                         break;
                     case "get_netgame_items":
                         _server.SendMessage(client, websocket_message_handlers.websocket_message_get_netgame_items(message.arguments));
+                        break;
+                    case "get_variant_details":
+                        _server.SendMessage(client, websocket_message_handlers.websocket_message_get_variant_details(message.arguments));
                         break;
                 }
             }
